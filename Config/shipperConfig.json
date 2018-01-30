@@ -10,7 +10,14 @@
                   "client_key": "ENTER PATH",
                   "client_cert": "ENTER PATH",
                   "username": "sysadm",
-                  "password": "sysadm"
+                  "password": "sysadm",
+                  "index":{
+                    "name": "",
+                    "doc_type": "hardware",
+                    "": ""
+
+
+                  }
 
               }
 
@@ -34,30 +41,35 @@
               "Load": "1.3.6.1.4.1.2021.10.1.3.1"
             },
 
-            "Disk":{
-              "1":{
+            "Disk":[
+                {
+                "Name": "1",
                 "Path": "/",
                 "Available": "dskAvail.1"
               },
-              "2":{
+                {
+                "Name": "2",
                 "Path": "Var",
                 "Available": "dskAvail.2"
               },
-              "4":{
+                {
+                "Name": "4",
                 "Path": "home",
                 "Available": "dskAvail.4"
               },
-              "5":{
+                {
+                "Name": "5",
                 "Path": "boot",
                 "Available": "dskAvail.5"
               },
-              "6":{
+                {
+                "Name": "6",
                 "Path": "archive",
                 "Available": "dskAvail.6"
               }
 
 
-            }
+            ]
 
 
 
