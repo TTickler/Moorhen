@@ -1,5 +1,103 @@
 {
+  "shipperTypes":{
+    "hardware":{
+      "endpoints":{
+              "elasticsearch": {
+                  "_type": "urllib3",
+                  "address": "192.168.100.221",
+                  "port": 9200,
+                  "timout": 10,
+                  "client_key": "ENTER PATH",
+                  "client_cert": "ENTER PATH",
+                  "username": "sysadm",
+                  "password": "sysadm"
 
+              }
+
+
+      },
+
+      "metrics": {
+          "aggregatePatterns": {
+            "CPU": "cpu",
+            "MEM": "mem",
+            "DSK": "dsk",
+            "TEMPS": {
+              "CPU": ["temp", "core"],
+              "MEM": ["temp", "mem"]
+            }
+          },
+
+          "OIDs":{
+            "CPU":{
+              "Utilization": "1.3.6.1.4.1.2021.11.11.0",
+              "Load": "1.3.6.1.4.1.2021.10.1.3.1"
+            },
+
+            "Disk":{
+              "1":{
+                "Path": "/",
+                "Available": "dskAvail.1"
+              },
+              "2":{
+                "Path": "Var",
+                "Available": "dskAvail.2"
+              },
+              "4":{
+                "Path": "home",
+                "Available": "dskAvail.4"
+              },
+              "5":{
+                "Path": "boot",
+                "Available": "dskAvail.5"
+              },
+              "6":{
+                "Path": "archive",
+                "Available": "dskAvail.6"
+              }
+
+
+            }
+
+
+
+          }
+
+      }
+
+
+    },
+
+    "software":{
+      "endpoints":{
+              "elasticsearch": {
+                  "_type": "urllib3",
+                  "address": "192.168.100.221",
+                  "port": 9200,
+                  "timout": 10,
+                  "client_key": "ENTER PATH",
+                  "client_cert": "ENTER PATH",
+                  "username": "sysadm",
+                  "password": "sysadm"
+
+
+              },
+
+      "metrics": {
+
+
+
+
+
+      }
+
+
+      }
+
+    }
+
+
+  }
 
 
 
