@@ -48,7 +48,7 @@ class snmpInterface(object):
         except:
             print('SNMP command failed.')
 
-        return result
+        return result.split(':',1)[1]
 
 
 test = snmpInterface()

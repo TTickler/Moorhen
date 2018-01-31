@@ -2,7 +2,7 @@ import json
 import os
 import snmpInterface
 import sys
-
+import pprint
 
 class Shipper(object):
     def __init__(self, shipperType, configPath):
@@ -36,7 +36,10 @@ class Shipper(object):
         with open(self.configPath) as config:
             configDict = json.load(config)
 
+	#Provides client ability to determine progress
         sys.stdout.write('Initializing.')
+
+	#outer loop for parsing shipperConfig.json
         for oidType in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs']:
 
             for oid in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType]:
@@ -80,4 +83,5 @@ class SoftwareMetricShipper(Shipper):
 test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
 
 test.getOIDdict
-print(test.getOIDdict)
+print('/n')
+pprint.pprint(test.getOIDdict)
