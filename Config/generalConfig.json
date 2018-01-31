@@ -1,8 +1,14 @@
 {
   "clientInfo": {
       "name": "bigboy1",
-      "ip": "172.21.66.104",
-      "": ""
+      "ip": "172.21.66.104"
+  },
+
+  "SNMP":{
+    "version":"v1",
+    "host": "localhost",
+    "community": "cpublic",
+    "port": 161
   }
 
 

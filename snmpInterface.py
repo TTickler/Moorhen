@@ -1,13 +1,57 @@
-import pysnmp
-
+import commands
+import time
+import logging
+import json
+import os
 
 
 class snmpInterface(object):
     def __init__(self):
-        self.test = 5
+
+        self._snmpHost = ''
+        self._snmpCommunity = ''
+        self._snmpPort = 0
+
+        #setting of declared snmp values
+        self.setUpSNMP()
 
 
-    def getSnmpResult(self, snmp_string):
-        result = ''
+
+
+    def setUpSNMP(self):
+
+        cwd = os.getcwd()
+        try:
+            with open(cwd + '/Config/generalConfig.json') as config:
+                configDict = json.load(config)
+        except:
+            print('/nError loading generalConfig.json.')
+            return
+
+
+        try:
+            self._snmpHost = configDict['SNMP']['host']
+            self._snmpCommunity = configDict['SNMP']['community']
+            self.snmpPort = configDict['SNMP']['port']
+            self._snmpVersion = configDict['SNMP']['version']
+        except:
+            print('Error parsing SNMP data in generalConfig.json.')
+            return
+
+    def getSnmpResult(self, snmp_value):
+        try:
+            status, result = commands.getstatusoutput("snmpget -OqvU -t 0.1 -" + self._snmpVersion + " -c "
+                                                     + self._snmpCommunity + " "
+                                                     + self._snmpHost + " "
+                                                     + str(snmp_value))
+
+        except:
+            print('SNMP command failed.')
 
         return result
+
+
+test = snmpInterface()
+
+value = test.getSnmpResult('1.3.6.1.4.1.2021.10.1.3.1')
+print(value)
