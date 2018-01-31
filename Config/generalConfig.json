@@ -7,7 +7,7 @@
   "SNMP":{
     "version":"v1",
     "host": "localhost",
-    "community": "cpublic",
+    "community": "public",
     "port": 161
   }
 

@@ -40,7 +40,7 @@ class snmpInterface(object):
 
     def getSnmpResult(self, snmp_value):
         try:
-            status, result = commands.getstatusoutput("snmpget -OqvU -t 0.1 -" + self._snmpVersion + " -c "
+            status, result = commands.getstatusoutput("snmpget -OUvs -" + self._snmpVersion + " -c"
                                                      + self._snmpCommunity + " "
                                                      + self._snmpHost + " "
                                                      + str(snmp_value))
@@ -53,5 +53,5 @@ class snmpInterface(object):
 
 test = snmpInterface()
 
-value = test.getSnmpResult('1.3.6.1.4.1.2021.10.1.3.1')
+value = test.getSnmpResult('dskAvail.1')
 print(value)
