@@ -31,6 +31,8 @@ class Shipper(object):
     def setOIDdict(self):
         self.OIDdict = {}
 
+        dskDict = {}
+
         with open(self.configPath) as config:
             configDict = json.load(config)
 
@@ -40,8 +42,12 @@ class Shipper(object):
             for oid in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType]:
                 sys.stdout.write('.')
                 if oidType == "Disk":
-                    self.OIDdict['Disk ' + oid['Name'] + ' Path'] = oid['Path']
-                    self.OIDdict['Disk ' + oid['Name'] + ' Available'] = self.snmpInterface.getSnmpResult(oid['Available'])
+                    dskDict['Disk ' + oid['Name']] = {}
+                    dskDict['Disk ' + oid['Name']].update({"Path": oid['Path']})
+                    dskDict['Disk ' + oid['Name']].update({"Available": self.snmpInterface.getSnmpResult(oid['Available'])})
+
+                    self.OIDdict.update(dskDict)
+                    dskDict.clear()
                 else:
                     self.OIDdict[oidType + ' ' + oid] = self.snmpInterface.getSnmpResult(configDict["shipperTypes"][self.shipperType]['metrics']["OIDs"][oidType][oid])
 
@@ -74,4 +80,4 @@ class SoftwareMetricShipper(Shipper):
 test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
 
 test.getOIDdict
-print("\n\n" + test.getOIDdict)
+print(test.getOIDdict)
