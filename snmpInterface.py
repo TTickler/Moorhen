@@ -53,5 +53,5 @@ class snmpInterface(object):
 
 test = snmpInterface()
 
-value = test.getSnmpResult('dskAvail.1')
+value = test.getSnmpResult('1.3.6.1.4.1.232.3.2.5.1.1.6.0.2')
 print(value)

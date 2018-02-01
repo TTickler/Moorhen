@@ -36,42 +36,72 @@
           },
 
           "OIDs":{
-            "CPU":{
-              "Utilization": "1.3.6.1.4.1.2021.11.11.0",
-              "Load": "1.3.6.1.4.1.2021.10.1.3.1"
-            },
+		"CPU Utililization": "1.3.6.1.4.1.2021.11.11.0",
+		"CPU Load": "1.3.6.1.4.1.2021.10.1.3.1",
+		
+	      "nestedMetrics":[	
+            	    {
+		      "CPU":[
+			{
+			"Name": "CPU1-Core1",
+			"Status": "",
+			"Temperature": ""
+			},
+                        {
+                        "Name": "CPU1-Core2",
+                        "Status": "",
+                        "Temperature": ""
+                        },
+                        {
+                        "Name": "CPU1-Core3",
+                        "Status": "",
+                        "Temperature": ""
+                        },
+                        {
+                        "Name": "CPU1-Core4",
+                        "Status": "",
+                        "Temperature": ""
+                        },
 
-            "Disk":[
-                {
-                "Name": "1",
-                "Path": "/",
-                "Available": "dskAvail.1"
-              },
-                {
-                "Name": "2",
-                "Path": "Var",
-                "Available": "dskAvail.2"
-              },
-                {
-                "Name": "4",
-                "Path": "home",
-                "Available": "dskAvail.4"
-              },
-                {
-                "Name": "5",
-                "Path": "boot",
-                "Available": "dskAvail.5"
-              },
-                {
-                "Name": "6",
-                "Path": "archive",
-                "Available": "dskAvail.6"
-              }
+			]
+		},
+	
 
+        	    {
+		      "Disk":[
+                	{
+                	"Name": "1",
+			"Status": "1.3.6.1.4.1.232.3.2.5.1.1.6.0.0",
+                	"Path": "/",
+               		"Available": "dskAvail.1"
+              		},
+                	{
+                	"Name": "2",
+                	"Status": "1.3.6.1.4.1.232.3.2.5.1.1.6.0.1",
+               		"Path": "Var",
+                	"Available": "dskAvail.2"
+              		},
+                	{
+                	"Name": "4",
+                	"Status": "1.3.6.1.4.1.232.3.2.5.1.1.6.0.2",
+                	"Path": "home",
+                	"Available": "dskAvail.4"
+              		},
+                	{
+                	"Name": "5",
+                	"Status": "1.3.6.1.4.1.232.3.2.5.1.1.6.0.3",
+                	"Path": "boot",
+                	"Available": "dskAvail.5"
+              		},
+                	{
+                	"Name": "6",
+                	"Status": "1.3.6.1.4.1.232.3.2.5.1.1.6.0.4",
+                	"Path": "archive",
+                	"Available": "dskAvail.6"
+              		}]
+		}
 
-            ]
-
-
+	]
 
           }
 

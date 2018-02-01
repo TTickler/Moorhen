@@ -41,14 +41,13 @@ class Shipper(object):
 
 	#outer loop for parsing shipperConfig.json
         for oidType in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs']:
-
             for oid in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType]:
                 sys.stdout.write('.')
-                if oidType == "Disk":
-                    dskDict['Disk ' + oid['Name']] = {}
-                    dskDict['Disk ' + oid['Name']].update({"Path": oid['Path']})
-                    dskDict['Disk ' + oid['Name']].update({"Available": self.snmpInterface.getSnmpResult(oid['Available'])})
-
+                if oidType == "nestedMetrics":
+                    for metric in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType][oid]:
+			
+		
+		
                     self.OIDdict.update(dskDict)
                     dskDict.clear()
                 else:
