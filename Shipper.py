@@ -3,6 +3,7 @@ import os
 import snmpInterface
 import sys
 import pprint
+from cParser import *
 
 class Shipper(object):
     def __init__(self, shipperType, configPath):
@@ -16,8 +17,6 @@ class Shipper(object):
 
     def setConfigPath(self, path):
         self.configPath = path
-
-
 
     @property
     def getType(self):
