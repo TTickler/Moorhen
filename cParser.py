@@ -109,9 +109,32 @@ class shipperConfigParser(cParser):
 
         @nestedOIDs.setter
         def nestedOIDs(self, dictData):
-                for key in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']:
-                        if key == 'nestedMetrics':
-                                self._nestedOIDs[key] = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs'][key]
+		temp_dict = {}
+		nested_temp_dict = {}
+		dict_for_update = {}
+		
+                for element in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']['nestedMetrics']:
+			for metricTopic in element:
+				dict_for_update.clear()
+				temp_dict.clear()
+				temp_dict = {metricTopic : {}}
+				for topicElement in element[metricTopic]:
+	                        	metricName = topicElement['Name']
+					nested_temp_dict.clear()
+					for key, value in topicElement.items(): 
+						if key == 'Name':
+							continue
+						else:
+							nested_temp_dict[key] = value
+				#	print(nested_temp_dict)
+					
+					dict_for_update[metricName] = nested_temp_dict
+					pprint.pprint(dict_for_update)
+				temp_dict[metricTopic].update(dict_for_update)
+				pprint.pprint(temp_dict)
+				self._nestedOIDs.update(temp_dict)
+				
+
 
 
         @property
@@ -127,8 +150,9 @@ class shipperConfigParser(cParser):
 
 
 test = shipperConfigParser('hardware')
-print(test.fields)
+#print(test.fields)
 print('\n\n')
 #pprint.pprint(test.configDict)
 #pprint.pprint(test.parsedDict)
-pprint.pprint(test.nonNestedOIDs)
+#pprint.pprint(test.nonNestedOIDs)
+#pprint.pprint(test.nestedOIDs)
