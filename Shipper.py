@@ -10,6 +10,10 @@ class Shipper(object):
         self.shipperType = shipperType
         self.configPath = configPath
 
+        self._OIDdict = {}
+
+        self.hardwareParser = shipperConfigParser('hardware')
+
 
         self.snmpInterface = snmpInterface.snmpInterface()
         self.setOIDdict()
@@ -32,30 +36,14 @@ class Shipper(object):
 
         dskDict = {}
 
-        with open(self.configPath) as config:
-            configDict = json.load(config)
-
-	#Provides client ability to determine progress
-        sys.stdout.write('Initializing.')
-
-	#outer loop for parsing shipperConfig.json
-        for oidType in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs']:
-            for oid in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType]:
-                sys.stdout.write('.')
-                if oidType == "nestedMetrics":
-                    for metric in configDict['shipperTypes'][self.shipperType]['metrics']['OIDs'][oidType][oid]:
-			
-		
-		
-                    self.OIDdict.update(dskDict)
-                    dskDict.clear()
-                else:
-                    self.OIDdict[oidType + ' ' + oid] = self.snmpInterface.getSnmpResult(configDict["shipperTypes"][self.shipperType]['metrics']["OIDs"][oidType][oid])
 
 
     @property
-    def getOIDdict(self):
-        return self.OIDdict
+    def OIDdict(self):
+        return self._OIDdict
+
+    @OIDdict.setter
+    def OIDdict(self, ):
 
 
 

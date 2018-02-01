@@ -1,158 +1,136 @@
 import json
-import os 
+import os
 import pprint
 
-#interface for parsing configuration files from /Config
+
+# interface for parsing configuration files from /Config
 class cParser(object):
-	def __init__(self, configPath):
-		self._parserType = ''
+    def __init__(self, configPath):
+        self._parserType = ''
 
-		#uses configDict.setter to parse entire config file and store in _configDict as dictionary
-		self.configDict = configPath
-		#do not confuse with configDict being set with configPath through configDict.setter. 
-		#this stores actual configPath.
-		self._configPath = configPath
+        # uses configDict.setter to parse entire config file and store in _configDict as dictionary
+        self.configDict = configPath
+        # do not confuse with configDict being set with configPath through configDict.setter.
+        # this stores actual configPath.
+        self._configPath = configPath
 
+    # gets all fields within dictionary provided.
+    '''
+        {
+           "example":[	
+            { 
+                    "name": "bill",
+                "age" : 35
+            }
+        
+            ]
+        }
+        
+    '''
 
-	#gets all fields within dictionary provided. 
-	'''
-		{
-		   "example":[	
-			{ 
-		            "name": "bill",
-			    "age" : 35
-			}
-		
-			]
-		}
-		
-	''' 
+    # Only the field "example" will be parsed out as name and age reside in a nested list of dictionaries.
+    # Their keys are not accessible
+    def getFields(self, dl, keys_list):
+        if isinstance(dl, dict):
+            keys_list += dl.keys()
+            map(lambda x: self.getFields(x, keys_list), dl.values())
+        elif isinstance(self.configDict, list):
+            map(lambda x: self.getFields(x, keys_list), dl)
 
-	#Only the field "example" will be parsed out as name and age reside in a nested list of dictionaries.
-	#Their keys are not accessible
-	def getFields(self, dl, keys_list):
-                if isinstance(dl, dict):
-                        keys_list += dl.keys()
-                        map(lambda x: self.getFields(x, keys_list), dl.values())
-                elif isinstance(self.configDict, list):
-                        map(lambda x: self.getFields(x, keys_list), dl)
-               
+    @property
+    def configDict(self):
+        return self._configDict
 
-	@property
-	def configDict(self):
-		return self._configDict
-	
-	@configDict.setter
-        def configDict(self, configPath):
-                with open(configPath) as config:
-                        self._configDict = json.load(config)
+    @configDict.setter
+    def configDict(self, configPath):
+        with open(configPath) as config:
+            self._configDict = json.load(config)
 
-        @property
-        def fields(self):
-		keys_list = []
-    		self.getFields(self.configDict, keys_list)
-		return keys_list
+    @property
+    def fields(self):
+        keys_list = []
+        self.getFields(self.configDict, keys_list)
+        return keys_list
 
 
-
-#child class of cParser providing an interface for parsing /Config/generalConfig.json
+# child class of cParser providing an interface for parsing /Config/generalConfig.json
 class generalConfigParser(cParser):
-	def __init__(self):
-		cParser.__init__(self, os.getcwd() + "/Config/generalConfig.json")
-		
+    def __init__(self):
+        cParser.__init__(self, os.getcwd() + "/Config/generalConfig.json")
 
 
-#child class of cParser providing an interface for parsing /Config/shipperConfig.json
+# child class of cParser providing an interface for parsing /Config/shipperConfig.json
 class shipperConfigParser(cParser):
-	def __init__(self, shipperType):
-		cParser.__init__(self, os.getcwd() + "/Config/shipperConfig.json")
-		
-		self._nonNestedOIDs = {}		
-		self._nestedOIDs = {}
+    def __init__(self, shipperType):
+        cParser.__init__(self, os.getcwd() + "/Config/shipperConfig.json")
 
-		self._shipperType = shipperType
-		self.parsedDict = self.configDict
-		self.nonNestedOIDs = self.configDict
-		self.nestedOIDs = self.configDict
-	
+        self._nonNestedOIDs = {}
+        self._nestedOIDs = {}
 
-	@property
-	def parsedDict(self):
-		return self._parsedDict
+        self._shipperType = shipperType
+        self.parsedDict = self.configDict
+        self.nonNestedOIDs = self.configDict
+        self.nestedOIDs = self.configDict
 
-	@parsedDict.setter
-	def parsedDict(self, dictData):
-		self._parsedDict = self.configDict['shipperTypes'][self._shipperType]
+    @property
+    def parsedDict(self):
+        return self._parsedDict
 
-	@property
-	def oidDict(self):
-		return self._oidDict
+    @parsedDict.setter
+    def parsedDict(self, dictData):
+        self._parsedDict = self.configDict['shipperTypes'][self._shipperType]
 
-	@oidDict.setter
-	def oidDict(self, dictData):
-		self._oidDict = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']
+    @property
+    def oidDict(self):
+        return self._oidDict
 
-	@property
-	def nonNestedOIDs(self):
-		return self._nonNestedOIDs
+    @oidDict.setter
+    def oidDict(self, dictData):
+        self._oidDict = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']
 
-	@nonNestedOIDs.setter
-	def nonNestedOIDs(self, dictData):
-		for key in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']:
-			if key != 'nestedMetrics':
-				self._nonNestedOIDs[key] = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs'][key]
+    @property
+    def nonNestedOIDs(self):
+        return self._nonNestedOIDs
 
-	#Handles parsing/returning nested metrics based off of shipperConfig.json schema under "OIDs" field
-        @property
-        def nestedOIDs(self):
-                return self._nestedOIDs
+    @nonNestedOIDs.setter
+    def nonNestedOIDs(self, dictData):
+        for key in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']:
+            if key != 'nestedMetrics':
+                self._nonNestedOIDs[key] = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs'][key]
 
-        @nestedOIDs.setter
-        def nestedOIDs(self, dictData):
-		temp_dict = {}
-		nested_temp_dict = {}
-		dict_for_update = {}
-		
-                for element in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']['nestedMetrics']:
-			for metricTopic in element:
-				dict_for_update.clear()
-				temp_dict.clear()
-				temp_dict = {metricTopic : {}}
-				for topicElement in element[metricTopic]:
-	                        	metricName = topicElement['Name']
-					nested_temp_dict.clear()
-					for key, value in topicElement.items(): 
-						if key == 'Name':
-							continue
-						else:
-							nested_temp_dict[key] = value
-				#	print(nested_temp_dict)
-					
-					dict_for_update[metricName] = nested_temp_dict
-					pprint.pprint(dict_for_update)
-				temp_dict[metricTopic].update(dict_for_update)
-				pprint.pprint(temp_dict)
-				self._nestedOIDs.update(temp_dict)
-				
+    # Handles parsing/returning nested metrics based off of shipperConfig.json schema under "OIDs" field
+    @property
+    def nestedOIDs(self):
+        return self._nestedOIDs
+
+    @nestedOIDs.setter
+    def nestedOIDs(self, dictData):
+        temp_dict = {}
+
+        for element in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']['nestedMetrics']:
+            for metricTopic in element:
+                temp_dict[metricTopic] = {}
+                for topicElement in element[metricTopic]:
+                    metricName = topicElement['Name']
+                    del topicElement['Name']
+                    temp_dict[metricTopic][metricName] = topicElement
+        self._nestedOIDs = temp_dict
 
 
+    @property
+    def shipperTypes(self):
+        shipperTypes = []
 
-        @property
-        def shipperTypes(self):
-                shipperTypes = []
+        for types in self.configDict['shipperTypes']:
+            shipperTypes.append(types)
 
-                for types in self.configDict['shipperTypes']:
-                        shipperTypes.append(types)
-
-                return shipperTypes
- 
-		
+        return shipperTypes
 
 
 test = shipperConfigParser('hardware')
-#print(test.fields)
+# print(test.fields)
 print('\n\n')
-#pprint.pprint(test.configDict)
-#pprint.pprint(test.parsedDict)
-#pprint.pprint(test.nonNestedOIDs)
-#pprint.pprint(test.nestedOIDs)
+# pprint.pprint(test.configDict)
+# pprint.pprint(test.parsedDict)
+# pprint.pprint(test.nonNestedOIDs)
+pprint.pprint(test.nestedOIDs)

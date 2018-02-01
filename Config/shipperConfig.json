@@ -43,22 +43,22 @@
             	    {
 		      "CPU":[
 			{
-			"Name": "CPU1-Core1",
+			"Name": "Core1",
 			"Status": "",
 			"Temperature": ""
 			},
                         {
-                        "Name": "CPU1-Core2",
+                        "Name": "Core2",
                         "Status": "",
                         "Temperature": ""
                         },
                         {
-                        "Name": "CPU1-Core3",
+                        "Name": "Core3",
                         "Status": "",
                         "Temperature": ""
                         },
                         {
-                        "Name": "CPU1-Core4",
+                        "Name": "Core4",
                         "Status": "",
                         "Temperature": ""
                         }
