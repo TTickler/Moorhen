@@ -36,17 +36,17 @@
           },
 
           "OIDs":{
-		"CPU Utililization": "1.3.6.1.4.1.2021.11.11.0",
-		"CPU Load": "1.3.6.1.4.1.2021.10.1.3.1",
+		  "CPU Utililization": "1.3.6.1.4.1.2021.11.11.0",
+		  "CPU Load": "1.3.6.1.4.1.2021.10.1.3.1",
 		
 	      "nestedMetrics":[	
             	    {
 		      "CPU":[
-			{
-			"Name": "Core1",
-			"Status": "",
-			"Temperature": ""
-			},
+			            {
+			            "Name": "Core1",
+			            "Status": "",
+			            "Temperature": ""
+			            },
                         {
                         "Name": "Core2",
                         "Status": "",

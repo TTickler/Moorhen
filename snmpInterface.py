@@ -49,9 +49,3 @@ class snmpInterface(object):
             print('SNMP command failed.')
 
         return result.split(':',1)[1]
-
-
-test = snmpInterface()
-
-value = test.getSnmpResult('1.3.6.1.4.1.232.3.2.5.1.1.6.0.2')
-print(value)

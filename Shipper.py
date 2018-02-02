@@ -10,14 +10,12 @@ class Shipper(object):
         self.shipperType = shipperType
         self.configPath = configPath
 
-        self._OIDdict = {}
+        self._toShipOIDdict = {}
 
         self.hardwareParser = shipperConfigParser('hardware')
-
-
         self.snmpInterface = snmpInterface.snmpInterface()
-        self.setOIDdict()
-
+        #
+        self.toShipOIDdict = self.hardwareParser.parsedDict
 
     def setConfigPath(self, path):
         self.configPath = path
@@ -30,20 +28,28 @@ class Shipper(object):
     def getConfigPath(self):
         return self.configPath
 
-
-    def setOIDdict(self):
-        self.OIDdict = {}
-
-        dskDict = {}
-
-
-
     @property
-    def OIDdict(self):
-        return self._OIDdict
+    def toShipOIDdict(self):
+        return self._toShipOIDdict
 
-    @OIDdict.setter
-    def OIDdict(self, ):
+    @toShipOIDdict.setter
+    def toShipOIDdict(self, parsedDict):
+        temp_nested_dict = self.hardwareParser.nestedOIDs
+        temp_nonNested_dict = self.hardwareParser.nonNestedOIDs
+
+        #nested dict maker
+        for topic in temp_nested_dict:
+            for metricName in temp_nested_dict[topic]:
+                for key, value in temp_nested_dict[topic][metricName].items():
+                    temp_nested_dict[topic][metricName][key] = self.snmpInterface.getSnmpResult(value)
+
+        #nonNested dict maker
+        for key, value in temp_nonNested_dict.items():
+            temp_nonNested_dict[key] = self.snmpInterface.getSnmpResult(value)
+
+        self._toShipOIDdict = temp_nested_dict
+        self._toShipOIDdict['nonNested'] = temp_nonNested_dict
+
 
 
 
@@ -67,7 +73,4 @@ class SoftwareMetricShipper(Shipper):
 
 
 test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
-
-test.getOIDdict
-print('/n')
-pprint.pprint(test.getOIDdict)
+pprint.pprint(test.toShipOIDdict)
