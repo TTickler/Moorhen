@@ -31,15 +31,6 @@ class elasticsearchConnection(object):
         self.connect.
 
 
-
-
-    @property
-    def getHosts(self):
-
-    @
-    def get
-
-
 #Elasticsearch connection using urllib3 library and http protocol
 class EShttpConnection(elasticsearchConnection):
     def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
