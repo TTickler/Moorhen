@@ -5,6 +5,7 @@ import sys
 import pprint
 from cParser import *
 import elasticsearch
+from datetime import datetime
 
 class Shipper(object):
     def __init__(self, shipperType, configPath):
@@ -35,6 +36,7 @@ class Shipper(object):
 
     @toShipOIDdict.setter
     def toShipOIDdict(self, parsedDict):
+	self._toShipOIDdict.clear()
         temp_nested_dict = self.hardwareParser.nestedOIDs
         temp_nonNested_dict = self.hardwareParser.nonNestedOIDs
 
@@ -53,7 +55,9 @@ class Shipper(object):
 
         self._toShipOIDdict = temp_nested_dict
         self._toShipOIDdict['nonNested'] = temp_nonNested_dict
-
+	
+	#adding timestamp for indexing/querying purposes 
+	self._toShipOIDdict['@timestamp'] = datetime.utcnow()
 
 
 
@@ -75,11 +79,11 @@ class SoftwareMetricShipper(Shipper):
         Shipper.__init__("software", os.getcwd() + '/Config/shipperConfig.json')
 
 
-esTest = elasticsearch.Elasticsearch('http://192.168.100.221:9200')
+esTest = elasticsearch.Elasticsearch('http://localhost:9200')
 test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
 pprint.pprint(test.toShipOIDdict)
 
-#response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
+response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
 
 
 
