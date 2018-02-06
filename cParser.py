@@ -58,8 +58,12 @@ class generalConfigParser(cParser):
     def __init__(self):
         cParser.__init__(self, os.getcwd() + "/Config/generalConfig.json")
 	self._hostName = self.configDict['clientInfo']['name']
-	#self._PoC = self.configDict['']['']
-	
+
+	#sets point of contact information parsed from generalConfig.json
+	#PoC will be a dictionary with 'name' and 'phone' fields
+	self._PoC = self.configDict['clientInfo']['Point of Contact']
+    
+    #returns hostName parsed from configuration file in __init__	
     @property
     def hostName(self):
     	return self._hostName
@@ -67,6 +71,16 @@ class generalConfigParser(cParser):
     @hostName.setter
     def hostName(self, name):
     	self._hostName = name
+
+
+    #returns the point of contact dictionary parsed from generalConfig configuration file
+    @property
+    def pointOfContact(self):
+	return self._pointOfContact
+
+    @pointOfContact.setter
+    def pointOfContact(self, PoC):
+	self._pointOfContact = PoC
 
 
 # child class of cParser providing an interface for parsing /Config/shipperConfig.json
@@ -113,6 +127,8 @@ class shipperConfigParser(cParser):
     def nestedOIDs(self):
         return self._nestedOIDs
 
+
+    #sets _nestedOIDs to the parsed dictionary from shipperConfig.json nestedOID field
     @nestedOIDs.setter
     def nestedOIDs(self, dictData):
         temp_dict = {}
