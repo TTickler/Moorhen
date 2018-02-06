@@ -14,6 +14,8 @@ class Shipper(object):
 
         self._toShipOIDdict = {}
 
+
+	self.generalConfigParser = generalConfigParser()
         self.hardwareParser = shipperConfigParser('hardware')
         self.snmpInterface = snmpInterface.snmpInterface()
         #
@@ -47,18 +49,18 @@ class Shipper(object):
 			if key == 'Path':
 				continue
 			else:
-                		temp_nested_dict[topic][metricName][key] = self.snmpInterface.getSnmpResult(value)
-
+                		temp_nested_dict[topic][metricName][key] = int(self.snmpInterface.getSnmpResult(value))
+				#temp_nested_dict[topic][metricName][key] = 4
         #nonNested dict maker
         for key, value in temp_nonNested_dict.items():
-            temp_nonNested_dict[key] = self.snmpInterface.getSnmpResult(value)
+            temp_nonNested_dict[key] = float(self.snmpInterface.getSnmpResult(value))
 
         self._toShipOIDdict = temp_nested_dict
         self._toShipOIDdict['nonNested'] = temp_nonNested_dict
 	
 	#adding timestamp for indexing/querying purposes 
 	self._toShipOIDdict['@timestamp'] = datetime.utcnow()
-
+	self._toShipOIDdict['client'] = self.generalConfigParser.hostName
 
 
 #interface for shipping hardware metrics defined in config file
@@ -79,11 +81,11 @@ class SoftwareMetricShipper(Shipper):
         Shipper.__init__("software", os.getcwd() + '/Config/shipperConfig.json')
 
 
-esTest = elasticsearch.Elasticsearch('http://localhost:9200')
-test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
-pprint.pprint(test.toShipOIDdict)
+#esTest = elasticsearch.Elasticsearch('http://localhost:9200')
+#test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
+#pprint.pprint(test.toShipOIDdict)
 
-response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
+#response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
 
 
 

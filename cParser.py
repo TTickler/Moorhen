@@ -57,6 +57,16 @@ class cParser(object):
 class generalConfigParser(cParser):
     def __init__(self):
         cParser.__init__(self, os.getcwd() + "/Config/generalConfig.json")
+	self._hostName = self.configDict['clientInfo']['name']
+	#self._PoC = self.configDict['']['']
+	
+    @property
+    def hostName(self):
+    	return self._hostName
+
+    @hostName.setter
+    def hostName(self, name):
+    	self._hostName = name
 
 
 # child class of cParser providing an interface for parsing /Config/shipperConfig.json

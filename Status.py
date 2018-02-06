@@ -20,7 +20,8 @@ class Status(object):
 	def setOverallStatus(self, metrics_dict):
 		
 		for typeMetric in metrics_dict:
-			for 
+			for metricKeyword in metrics_dict[typeMetric]:
+				 
 		
 
 
