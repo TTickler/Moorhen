@@ -49,7 +49,18 @@ class Shipper(object):
 			if key == 'Path':
 				continue
 			else:
-                		temp_nested_dict[topic][metricName][key] = int(self.snmpInterface.getSnmpResult(value))
+
+				result = int(self.snmpInterface.getSnmpResult(value))
+
+				#conditional to check if a status is reporting as not found
+				#Since only three thresholds are supported in Grafana, 1 is converted 
+				#to 4 to report as a failure 
+				if key == 'Status' and result == 1:
+					temp_nested_dict[topic][metricName][key] = 4
+				
+				else:
+                			temp_nested_dict[topic][metricName][key] = result
+				
 				#temp_nested_dict[topic][metricName][key] = 4
         #nonNested dict maker
         for key, value in temp_nonNested_dict.items():

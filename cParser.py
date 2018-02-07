@@ -152,11 +152,3 @@ class shipperConfigParser(cParser):
 
         return shipperTypes
 
-
-test = shipperConfigParser('hardware')
-# print(test.fields)
-print('\n\n')
-# pprint.pprint(test.configDict)
-# pprint.pprint(test.parsedDict)
-# pprint.pprint(test.nonNestedOIDs)
-pprint.pprint(test.nestedOIDs)
