@@ -1,0 +1,9 @@
+{
+"expectedMetrics": {
+		"CPU.1.Status": 2,
+		"CPU.2.Status": 2,
+		"PSU.1.Status": 2,
+		"PSU.2.Status": 2,
+		
+	}
+}
