@@ -19,7 +19,11 @@ class indexHealth(object):
 	
 	#returns status (2,3,4) of previous #totalToQuery oidTypes   
 	def getCurrent(self ,greenTotal,oidType, hits_Source):
-
+		
+		#totalCount is a dictionary that keeps track of the count of OID statuses that are
+		# 2, 3, or 4. The fields are incremented each time a specific status is found. So if 
+		# CPU.1.Status = 2 totalCount would be {"2":1,"3":0,"4":0} after one iteration. This allows ease of
+		# importance comparisons (4 > 3, 3 > 2) 
 		totalCount = {"2":0, "3":0, "4":0}
 				
 		#loop to check status numbers 
@@ -27,9 +31,15 @@ class indexHealth(object):
 			if category == "nonNested" or category == "@timestamp" or category == "client":
 				continue
 			else:
-	
+				#for hardware piece in passed in hits[_source]. This is all of the hits returned from an
+				#elasticsearch query in json formatting
 				for hwPiece in hits_Source[category]:	
 					for metric in hits_Source[category][hwPiece]:
+
+						#conditional for comparing the expectedMetrics to the current metric. If it is found
+						#then logic can be done to perform updates on totalCount's fields. Format of the current
+						#metric is converted to EX: CPU.1.Status to match schema of expectedMetrics and match
+						#how elasticsearch queries require their query to be formatted 
 						if str(category + "." + hwPiece + "." + metric) in self.expectedMetrics['expectedMetrics']:
 							if hits_Source[category][hwPiece][metric] == 2 and self.expectedMetrics['expectedMetrics'][str(category + "." + hwPiece + "." + metric)] != hits_Source[category][hwPiece][metric]:
 								totalCount["4"] += 1
@@ -91,7 +101,7 @@ if __name__ == '__main__':
 		#	pprint.pprint(hit["_source"])
 
 		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]))
-		test.putIntoIndex({"@timestamp": datetime.utcnow(), "overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
+		test.putIntoIndex({"@timestamp": datetime.utcnow(),"groupBy": "3" ,"overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
 		#es = elasticsearch.Elasticsearch()
     		
 		time.sleep(10)
