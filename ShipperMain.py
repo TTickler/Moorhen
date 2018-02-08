@@ -24,5 +24,5 @@ if __name__ == '__main__':
 		esTest = elasticsearch.Elasticsearch('http://localhost:9200')
 		test = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
 		response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
-		time.sleep(15)
+		time.sleep(5)
 

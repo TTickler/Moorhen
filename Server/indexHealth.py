@@ -1,7 +1,10 @@
 import json
 import elasticsearch
 import os
-
+from pathlib import Path
+import time
+import pprint
+from datetime import datetime
 
 class indexHealth(object):
 	def __init__(self):
@@ -11,29 +14,84 @@ class indexHealth(object):
 		#status returned from an snmpget on the specific OID. This simple format allows a readable 
 		#configuration file and provides an easy format for splitting the strings into seperate keys for
 		#queries 
-		with open(os.getcwd() + '/expectedMetrics.json') as self.
+		with open(os.getcwd() + '/expectedMetrics.json') as expectedMetricsJson:
+			self.expectedMetrics = json.load(expectedMetricsJson)
 	
 	#returns status (2,3,4) of previous #totalToQuery oidTypes   
-	def getCurrent(self,totalToQuery,greenTotal,oidType, hits):
+	def getCurrent(self ,greenTotal,oidType, hits_Source):
 
 		totalCount = {"2":0, "3":0, "4":0}
 				
 		#loop to check status numbers 
-		for hit in hits:
-			for key in hit:
-				if key == 
+		for category in hits_Source:
+			if category == "nonNested" or category == "@timestamp" or category == "client":
+				continue
+			else:
+	
+				for hwPiece in hits_Source[category]:	
+					for metric in hits_Source[category][hwPiece]:
+						if str(category + "." + hwPiece + "." + metric) in self.expectedMetrics['expectedMetrics']:
+							if hits_Source[category][hwPiece][metric] == 2 and self.expectedMetrics['expectedMetrics'][str(category + "." + hwPiece + "." + metric)] != hits_Source[category][hwPiece][metric]:
+								totalCount["4"] += 1
+							elif hits_Source[category][hwPiece][metric] == 2:
+								totalCount["2"] += 1
+							elif hits_Source[category][hwPiece][metric] == 3:
+								totalCount["3"] += 1
+							else:
+								totalCount["4"] += 1
 
+						else:
+							continue
+
+
+		if totalCount["4"] != 0:
+			status = 4
+		elif totalCount["4"] == 0 and totalCount["3"] != 0:
+			status = 3
+		else:
+			status = 2
+								
 		return status
+
+	def queryIndex(self, index, docType, elasticsearch, querySize):
+		esQuery = {"query": {
+        			"type" : {
+            				"value" : docType
+       					 }	
+    				   },
+
+				    "sort": {
+				      "@timestamp": {
+        					"order":"desc"
+      						}
+					},
+
+				"size": querySize
+			}
+		result = elasticsearch.search(index=index,doc_type=docType, body=esQuery)
+
+		return result
 		
 
 	
-	def putIntoIndex(self, body):
-		response = self.es.index(index="indexhealth",doc_type="indexstatus", body=body)
+	def putIntoIndex(self, body, elasticsearch):
+		response = elasticsearch.index(index="test",doc_type="indexstatus", body=body)
 		
 
 
 if __name__ == '__main__':
 	while True:
-    		response = esTest.index(index="test",doc_type="systemstatus", body=test.toShipOIDdict)
-		time.sleep(5)
- 
+
+
+		test = indexHealth()
+		es = elasticsearch.Elasticsearch("http://localhost:9200")
+		
+		res = test.queryIndex("test","systemstatus",es,5)
+		#for hit in res["hits"]["hits"]:
+		#	pprint.pprint(hit["_source"])
+
+		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]))
+		test.putIntoIndex({"@timestamp": datetime.utcnow(), "overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
+		#es = elasticsearch.Elasticsearch()
+    		
+		time.sleep(10)
