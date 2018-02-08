@@ -37,6 +37,7 @@ class cParser(object):
         elif isinstance(self.configDict, list):
             map(lambda x: self.getFields(x, keys_list), dl)
 
+    #returns entirety of configuration as a dictionary 
     @property
     def configDict(self):
         return self._configDict
