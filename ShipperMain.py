@@ -26,6 +26,7 @@ if __name__ == '__main__':
 		es = elasticsearch.Elasticsearch('http://localhost:9200')
 		
 		shipper = Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
+		pprint.pprint(shipper.toShipOIDdict)
 		response = es.index(index="test",doc_type="systemstatus", body=shipper.toShipOIDdict)
 		
 		#Can be changed based on preferences on system load vs. performance. The only visualizations to keep track of 

@@ -40,19 +40,19 @@ class indexHealth(object):
 						#then logic can be done to perform updates on totalCount's fields. Format of the current
 						#metric is converted to EX: CPU.1.Status to match schema of expectedMetrics and match
 						#how elasticsearch queries require their query to be formatted 
-						if str(category + "." + hwPiece + "." + metric) in self.expectedMetrics['expectedMetrics']:
-							if hits_Source[category][hwPiece][metric] == 2 and self.expectedMetrics['expectedMetrics'][str(category + "." + hwPiece + "." + metric)] != hits_Source[category][hwPiece][metric]:
-								totalCount["4"] += 1
-							elif hits_Source[category][hwPiece][metric] == 2:
+						if (str(category + "." + hwPiece + "." + metric) in self.expectedMetrics['expectedMetrics']['Status']['healthy']) or (str(category + ".*." + metric) in self.expectedMetrics['expectedMetrics']['Status']['healthy']):
+							if hits_Source[category][hwPiece][metric] == self.expectedMetrics['expectedMetrics']['Status']['healthy'][str(category + "." + hwPiece + "." + metric)]:
 								totalCount["2"] += 1
-							elif hits_Source[category][hwPiece][metric] == 3:
+							elif hits_Source[category][hwPiece][metric] == self.expectedMetrics['expectedMetrics']['Status']['warning'][str(category + "." + hwPiece + "." + metric)]:
 								totalCount["3"] += 1
-							else:
+							elif hits_Source[category][hwPiece][metric] == self.expectedMetrics['expectedMetrics']['Status']['failure'][str(category + "." + hwPiece + "." + metric)]:
 								totalCount["4"] += 1
+							else:
+								totalCount["1"] += 1
 
 						else:
 							continue
-
+		print(totalCount)
 
 		if totalCount["4"] != 0:
 			status = 4

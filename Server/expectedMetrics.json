@@ -1,8 +1,31 @@
 {
 "expectedMetrics": {
-		"CPU.1.Status": 2,
-		"CPU.2.Status": 2,
-		"PSU.1.Status": 2,
-		"PSU.2.Status": 2	
-	}
+   "Status": {
+	"healthy":{
+                "CPU.*.Status": 2,
+                "PSU.*.Status": 2,
+		"MEM.*.Status": 2
+		},
+	"warning":{
+                "CPU.*.Status": 3,
+                "PSU.*.Status": 3,
+                "MEM.*.Status": 3
+		},
+	"notFound":{
+                "CPU.*.Status": 1,
+                "PSU.*.Status": 1,
+                "MEM.*.Status": 1
+		},
+	"failure":{
+                "CPU.*.Status": 4,
+                "PSU.*.Status": 4,
+                "MEM.*.Status": 2
+		}
+	},
+
+   "Threshold":{
+	"CPU.1.Temp": "40>50>60",
+	"MEM.1.Temp": "40>60>70"
+	}	
+}
 }
