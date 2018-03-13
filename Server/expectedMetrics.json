@@ -4,7 +4,7 @@
 	"healthy":{
                 "CPU.*.Status": 2,
                 "PSU.*.Status": 2,
-		"MEM.*.Status": 2
+		"MEM.*.Status": 4
 		},
 	"warning":{
                 "CPU.*.Status": 3,
