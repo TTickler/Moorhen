@@ -4,28 +4,74 @@
 	"healthy":{
                 "CPU.*.Status": 2,
                 "PSU.*.Status": 2,
-		"MEM.*.Status": 4
+		"MEM.*.Status": 4,
+		"Disk.*.Status": 2,
+		"PSU.*.Status": 2,
+		"Fan.*.Status": 2
 		},
 	"warning":{
                 "CPU.*.Status": 3,
                 "PSU.*.Status": 3,
-                "MEM.*.Status": 3
+                "MEM.*.Status": 3,
+                "Disk.*.Status": 3,
+                "PSU.*.Status": 3,
+                "Fan.*.Status": 3
+
 		},
 	"notFound":{
                 "CPU.*.Status": 1,
                 "PSU.*.Status": 1,
-                "MEM.*.Status": 1
+                "MEM.*.Status": 1,
+                "Disk.*.Status": 1,
+                "PSU.*.Status": 1,
+                "Fan.*.Status": 1
+
+
 		},
 	"failure":{
                 "CPU.*.Status": 4,
                 "PSU.*.Status": 4,
-                "MEM.*.Status": 2
+                "MEM.*.Status": 2,
+                "Disk.*.Status": 4,
+                "PSU.*.Status": 4,
+                "Fan.*.Status": 4
+
+
+
 		}
 	},
 
    "Threshold":{
-	"CPU.1.Temp": "40>50>60",
-	"MEM.1.Temp": "40>60>70"
+	"CPU.*.Temp": 
+		{
+		   "healthy": 40,
+		   "warning": 50,
+		   "critical": 60
+
+		},
+	"MEM.*.Temp": 
+                {
+                   "healthy": 40,
+                   "warning": 50,
+                   "critical": 60
+
+                },
+
+	"CPU Utililization":{
+                   "healthy": 40,
+                   "warning": 50,
+                   "critical": 60
+
+
+		},
+	"CPU Load":{
+
+                   "healthy": 40,
+                   "warning": 50,
+                   "critical": 60
+
+
+		}
 	}	
 }
 }
