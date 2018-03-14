@@ -1,0 +1,5 @@
+setup.py
+Shipper.egg-info/PKG-INFO
+Shipper.egg-info/SOURCES.txt
+Shipper.egg-info/dependency_links.txt
+Shipper.egg-info/top_level.txt
