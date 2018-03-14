@@ -16,8 +16,8 @@
   },
 
    "mappingInfo": {
-	"esIndex": "clientMetricMappings"
-
+	"esIndex": "clientmetricmappings",
+	"esHost": "http://172.21.66.103:9200"
 	}
 
 
