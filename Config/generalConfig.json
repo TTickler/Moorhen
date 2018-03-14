@@ -13,7 +13,12 @@
     "host": "localhost",
     "community": "public",
     "port": 161
-  }
+  },
+
+   "mappingInfo": {
+	"esIndex": "clientMetricMappings"
+
+	}
 
 
 }
