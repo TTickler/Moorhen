@@ -7,7 +7,10 @@ import pprint
 from datetime import datetime
 
 class indexHealth(object):
-	def __init__(self):
+	def __init__(self, elasticsearch):
+
+
+		self.es = elasticsearch
 
 		#expectedMetrics.json houses metrics with a format of CPU.1.Status where
 		#CPU is the category, 1 is which metric within that category, and status is the actual
@@ -78,6 +81,17 @@ class indexHealth(object):
 			status = 2
 								
 		return status
+
+
+	#returns true if sequential threshold is met which is configured in hubConfig.json
+	def sequentialThresholdMet(self, metric):
+		
+
+
+		return True
+
+
+		return False
 
 	def statusMetricsChecker(self, category, metric, hits_source, totalCount, hwPiece, wildcard=False):
                             
@@ -161,9 +175,10 @@ class indexHealth(object):
 if __name__ == '__main__':
 	while True:
 
+		
+                es = elasticsearch.Elasticsearch("http://localhost:9200")
+		test = indexHealth(es)
 
-		test = indexHealth()
-		es = elasticsearch.Elasticsearch("http://localhost:9200")
 		
 		res = test.queryIndex("test","systemstatus",es,5)
 		#for hit in res["hits"]["hits"]:

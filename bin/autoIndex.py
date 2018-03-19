@@ -21,7 +21,7 @@ with open(os.getcwd() + '/../Config/expectedMetrics.json') as expectMetrics:
 	expectedMetrics = json.load(expectMetrics)
 
 try:
-	es = elasticsearch.Elasticsearch('http://localhost:9200')
+	es = elasticsearch.Elasticsearch('http://172.21.66.103:9200')
 	response = es.index(index=esIndex,doc_type="expectedMetrics", body=expectedMetrics)
 
 except Exception as esException:

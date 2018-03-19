@@ -1,0 +1,7 @@
+{
+"aggregations":{
+	"sequentialThreshold": 3
+
+	}
+
+}
