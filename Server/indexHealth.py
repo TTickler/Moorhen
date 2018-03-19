@@ -5,12 +5,11 @@ from pathlib import Path
 import time
 import pprint
 from datetime import datetime
+import ConfigParser
+
 
 class indexHealth(object):
-	def __init__(self, elasticsearch):
-
-
-		self.es = elasticsearch
+	def __init__(self):
 
 		#expectedMetrics.json houses metrics with a format of CPU.1.Status where
 		#CPU is the category, 1 is which metric within that category, and status is the actual
@@ -21,23 +20,50 @@ class indexHealth(object):
 			self.expectedMetrics = json.load(expectedMetricsJson)
 	
 	#returns status (2,3,4) of previous #totalToQuery oidTypes   
-	def getCurrent(self ,greenTotal,oidType, hits_source):
+	def getCurrent(self ,greenTotal,oidType, hits_source, Config, elasticsearch):
 		print(hits_source)
 		#totalCount is a dictionary that keeps track of the count of OID statuses that are
 		# 2, 3, or 4. The fields are incremented each time a specific status is found. So if 
 		# CPU.1.Status = 2 totalCount would be {"2":1,"3":0,"4":0} after one iteration. This allows ease of
 		# importance comparisons (4 > 3, 3 > 2) 
 		totalCount = {"1": 0, "2":0, "3":0, "4":0}
-				
+
+		
 		#loop to check status numbers 
 		for category in hits_source:
 			if category == "@timestamp" or category == "client":
 				continue
 
+		                #query for specific node's expectedMetrics template from elasticsearch database
+                	esQuery = {
+                	  "query": {
+                	    "bool":{
+                	        "must": ["match":{"client": hits_source["client"]}]
+                	        }
+               		   },
+                 	 "size": "1",
+                 	 "sort": [
+                        	   {
+                        		"@timestamp": {
+                        		"order": "desc"
+                             		 }
+                           	 }
+                             ]
+                       	 }
+			
+
+			#gets the expected metrics for speficied host by querying specified index/doctype for 
+			#mappings
+			expectedMetrics = self.queryES(Config.get(), Config.get(), elasticsearch)
+
+
                         elif category == "nonNested":
 				for metric in hits_source[category]:
 					
-					if str(metric) in self.expectedMetrics['expectedMetrics']['Threshold']:
+					#query templates index for expectedMetrics of current hostname for 
+					#expected metric values for comparison to snmpget results from the specified node
+					expectedMetrics = self.queryES(
+					if str(metric) in expectedMetrics['']['Threshold']:
 
 						#since certain metrics such as CPU Utilization can have a lower value being worse than a higher value
 						#we must allow an easily configurable way to handle this. getcompareType returns whether the flow of comparisons
@@ -84,7 +110,7 @@ class indexHealth(object):
 
 
 	#returns true if sequential threshold is met which is configured in hubConfig.json
-	def sequentialThresholdMet(self, metric):
+	def sequentialThresholdMet(self, metric, elasticsearch):
 		
 
 
@@ -146,21 +172,7 @@ class indexHealth(object):
 
 		return totalCount
 
-	def queryIndex(self, index, docType, elasticsearch, querySize):
-		esQuery = {"query": {
-        			"type" : {
-            				"value" : docType
-       					 }	
-    				   },
-
-				    "sort": {
-				      "@timestamp": {
-        					"order":"desc"
-      						}
-					},
-
-				"size": querySize
-			}
+	def queryES(self, index, docType, esQuery, elasticsearch):
 		result = elasticsearch.search(index=index,doc_type=docType, body=esQuery)
 
 		return result
@@ -174,17 +186,38 @@ class indexHealth(object):
 
 if __name__ == '__main__':
 	while True:
-
 		
+		#open hubConfig.ini for parsing configurable values out such as 
+		#the consecutive threshold hit limits 
+		Config = ConfigParser.ConfigParser()
+		Config.read(os.getcwd() + "hubConfig.ini")		
+
+
                 es = elasticsearch.Elasticsearch("http://localhost:9200")
 		test = indexHealth(es)
 
-		
-		res = test.queryIndex("test","systemstatus",es,5)
+		#query to be used for systemstatus 
+                esQuery = {"query": {
+                                "type" : {
+                                        "value" : Config.get("Indices", "aggDocType")
+                                         }
+                                   },
+
+                                    "sort": {
+                                      "@timestamp": {
+                                                "order":"desc"
+                                                }
+                                        },
+
+                                "size": Config.get("Indices", "aggQuerySize")
+                        }
+
+		#passes esQuery into queryIndex to get results of specified query
+		res = test.queryES(Config.get("Indices", "aggIndex"), Config.get("Indices", "aggDocType"), esQuery, es)
 		#for hit in res["hits"]["hits"]:
 		#	pprint.pprint(hit["_source"])
-
-		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]))
+		
+		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]), Config)
 		test.putIntoIndex({"@timestamp": datetime.utcnow(),"groupBy": "3" ,"overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
 		#es = elasticsearch.Elasticsearch()
     		
