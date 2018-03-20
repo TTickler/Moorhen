@@ -6,7 +6,7 @@ import time
 import pprint
 from datetime import datetime
 import ConfigParser
-from elasticsearchConnection import Query
+import elasticsearchConnection 
 
 class indexHealth(object):
 	def __init__(self):
@@ -35,19 +35,19 @@ class indexHealth(object):
 				continue
 
 		                #query for specific node's expectedMetrics template from elasticsearch database
-                	esQuery = {
-                	  "query": {
-                	        "match": {"client": hits_source["client"]}
-                	        },
-                 	 "size": "1",
-                 	 "sort": [
-                        	   {
-                        		"@timestamp": {
-                        		"order": "desc"
-                             		 }
-                           	 }
-                             ]
-                       	 }
+                		esQuery = {
+                	 	   "query": {
+                	       		 "match": {"client": hits_source["client"]}
+                	       		 },
+                 	 	    "size": "1",
+                 	 	    "sort": [
+                        	  	       {
+                        			"@timestamp": {
+                        			"order": "desc"
+                             			 }
+                           	 	      }
+                             		    ]
+                       			 }
 			
 
 			#gets the expected metrics for speficied host by querying specified index/doctype for 
@@ -176,13 +176,15 @@ if __name__ == '__main__':
 	#open hubConfig.ini for parsing configurable values out such as 
 	#the consecutive threshold hit limits 
 	Config = ConfigParser.ConfigParser()
-	Config.read(os.getcwd() + "hubConfig.ini")		
+	assert os.path.exists('hubConfig.ini')
+	Config.read("hubConfig.ini")		
+	print Config.sections()
 
+	
+	elasticsearch_query = elasticsearchConnection.Query(Config.get('elasticsearch', 'host'))
+	elasticsearch_index = elasticsearchConnection.Index(Config.get('elasticsearch', 'host'))
 
-
-	#change to take input from configuration file
-        es = elasticsearch.Elasticsearch("")
-	test = indexHealth(es)
+	test = indexHealth()
 
 	#query to be used for systemstatus 
         esQuery = {"query": {
@@ -190,25 +192,20 @@ if __name__ == '__main__':
                             "value" : Config.get("Indices", "aggDocType")
                                 }
                             },
-
                         "sort": {
                         "@timestamp": {
                             "order":"desc"
                                       }
                                 },
-
                         "size": Config.get("Indices", "aggQuerySize")
                  }
 
         while True:
-
 		#passes esQuery into queryIndex to get results of specified query
-		res = test.queryES(Config.get("Indices", "aggIndex"), Config.get("Indices", "aggDocType"), esQuery, es)
-		#for hit in res["hits"]["hits"]:
-		#	pprint.pprint(hit["_source"])
+		res = elasticsearch_query.queryES(Config.get("Indices", "aggIndex"), Config.get("Indices", "aggDocType"), esQuery)
 		
 		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]), Config)
-		test.putIntoIndex({"@timestamp": datetime.utcnow(),"groupBy": "3" ,"overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
+		elasticsearch_index.putInto({"@timestamp": datetime.utcnow(),"groupBy": "3" ,"overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)
 		#es = elasticsearch.Elasticsearch()
     		
 		time.sleep(10)

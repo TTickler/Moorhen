@@ -2,36 +2,41 @@ import elasticsearch
 from datetime import datetime
 
 class elasticsearchClient(object):
-    def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
+    def __init__(self, host, port=9200, timeout=10, client_cert='', client_key='', maxsize=5):
 
         #Elasticsearch connection parameters
         self._host = host
-        self._port = port
+	print(self._host)
+	self._port = port
         self._timeout = timeout
         self._client_cert = client_cert
         self._client_key = client_key
         self._max_size = maxsize
-	self.es = ''
+	self._elasticsearchInstance = self.clientCreation()
 
-	#attempts to initialize a client 
-	self.clientCreation()
+
+    @property
+    def instance(self):
+	return self._elasticsearchInstance
+
+    @instance.setter
+    def instance(self, elasticsearch_instance):
+	self._elasticsearchInstance = instance
 
     #tries to create elasticsearch client. Returns true if client is successfully created
     #else, returns false
     def clientCreation(self):
 	
-	try:
-		self.es = elasticsearch.Elasticsearch(self._host + ':' + str(self._port))
-		return True
+	#try/except not provided here as a failure of client creation indicates a failure of another component
+	#and should be sorted until Server/ modules continue operation	
+	elasticsearchInstance = elasticsearch.Elasticsearch(self._host, port=self._port)
 
-	except:
-		print("Failed to connect to elasticsearch.")
-		return False
+	return elasticsearchInstance
        
 
 class Query(elasticsearchClient):
-	def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
-		elasticsearchClient.__init__(host, port, timeout, client_cert, client_key, maxsize)
+	def __init__(self, host, port=9200, timeout=10, client_cert='', client_key='', maxsize=5):
+		elasticsearchClient.__init__(self, host, port, timeout, client_cert, client_key, maxsize)
 
 
 	def queryES(self, index, doc_type, query_body):
@@ -45,8 +50,8 @@ class Query(elasticsearchClient):
 
 
 class Index(elasticsearchClient):
-	def __init__(self):
-		elasticsearchClient.__init__(host,port,timeout,client_cert, client_key, maxsize)
+	def __init__(self, host, port=9200, timeout=10, client_cert='', client_key='', maxsize=5):
+		elasticsearchClient.__init__(self, host, port, timeout,client_cert, client_key, maxsize)
 
         def putInto(self,index, doc_type ,body):
 
