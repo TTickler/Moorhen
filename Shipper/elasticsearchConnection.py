@@ -1,7 +1,7 @@
 import elasticsearch5 #elasticsearch5 is used for clarity and stability due to ELK stack being 5.x.x
 from datetime import datetime
 
-class elasticsearchConnection(object):
+class elasticsearchClient(object):
     def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
 
         #instantiation of elasticsearch5 object
@@ -28,25 +28,17 @@ class elasticsearchConnection(object):
 
         #
         self.connection = self.es.Connection()
-        self.connect.
 
 
-#Elasticsearch connection using urllib3 library and http protocol
-class EShttpConnection(elasticsearchConnection):
-    def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
-        elasticsearchConnection.__init__()
+class Query(elasticsearchClient):
+	def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
+		delasticsearchClient.__init__(host, port, timeout, client_cert, client_key, maxsize)
 
 
-
-
-
-#Elasticsearch connection using requests library
-class ESUrllib3Connection(elasticsearchConnection):
-    def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
-        elasticsearchConnection.__init__()
-
-
-
+	def queryES(self, index, doc_type, query_body):
+		
+		query_results =
+		return query_results
 
 
 
