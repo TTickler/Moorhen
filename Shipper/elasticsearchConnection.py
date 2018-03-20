@@ -4,14 +4,6 @@ from datetime import datetime
 class elasticsearchClient(object):
     def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
 
-        #instantiation of elasticsearch5 object
-        self.es = elasticsearch5
-
-        #
-        self._connection_type = ''
-        self._
-
-
         #Elasticsearch connection parameters
         self._host = host
         self._port = port
@@ -21,23 +13,31 @@ class elasticsearchClient(object):
         self._max_size = maxsize
 
 
-    def connect(self):
+	#attempts to initialize a client 
+	self.clientCreation()
 
-        #encapsulation of transport related to logic
-        self.transport = self.es.Transport()
+    #tries to create elasticsearch client. Returns true if client is successfully created
+    #else, returns false
+    def clientCreation(self):
+	
+	try:
+		self.es = elasticsearch5(self._host + ':' + self._port)
+		return True
 
-        #
-        self.connection = self.es.Connection()
+	except:
+		print("Failed to connect to elasticsearch.")
+		return False
+       
 
 
 class Query(elasticsearchClient):
 	def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
-		delasticsearchClient.__init__(host, port, timeout, client_cert, client_key, maxsize)
+		elasticsearchClient.__init__(host, port, timeout, client_cert, client_key, maxsize)
 
 
 	def queryES(self, index, doc_type, query_body):
 		
-		query_results =
+		query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=query_body)
 		return query_results
 
 
