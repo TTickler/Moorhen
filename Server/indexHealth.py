@@ -37,10 +37,8 @@ class indexHealth(object):
 		                #query for specific node's expectedMetrics template from elasticsearch database
                 	esQuery = {
                 	  "query": {
-                	    "bool":{
-                	        "must": ["match":{"client": hits_source["client"]}]
-                	        }
-               		   },
+                	        "match": {"client": hits_source["client"]}
+                	        },
                  	 "size": "1",
                  	 "sort": [
                         	   {
@@ -54,7 +52,7 @@ class indexHealth(object):
 
 			#gets the expected metrics for speficied host by querying specified index/doctype for 
 			#mappings
-			expectedMetrics = self.queryES(Config.get(), Config.get(), elasticsearch)
+			#expectedMetrics = self.queryES(Config.get(), Config.get(), elasticsearch)
 
 
                         elif category == "nonNested":
@@ -62,7 +60,7 @@ class indexHealth(object):
 					
 					#query templates index for expectedMetrics of current hostname for 
 					#expected metric values for comparison to snmpget results from the specified node
-					expectedMetrics = self.queryES(
+					expectedMetrics = self.queryES(Config.get('Indices','templateIndex'), Config.get('Indices','templateDocType'), esQuery, elasticsearch)
 					if str(metric) in expectedMetrics['']['Threshold']:
 
 						#since certain metrics such as CPU Utilization can have a lower value being worse than a higher value
@@ -185,32 +183,33 @@ class indexHealth(object):
 
 
 if __name__ == '__main__':
-	while True:
 		
-		#open hubConfig.ini for parsing configurable values out such as 
-		#the consecutive threshold hit limits 
-		Config = ConfigParser.ConfigParser()
-		Config.read(os.getcwd() + "hubConfig.ini")		
+	#open hubConfig.ini for parsing configurable values out such as 
+	#the consecutive threshold hit limits 
+	Config = ConfigParser.ConfigParser()
+	Config.read(os.getcwd() + "hubConfig.ini")		
 
 
-                es = elasticsearch.Elasticsearch("http://localhost:9200")
-		test = indexHealth(es)
+        es = elasticsearch.Elasticsearch("http://localhost:9200")
+	test = indexHealth(es)
 
-		#query to be used for systemstatus 
-                esQuery = {"query": {
-                                "type" : {
-                                        "value" : Config.get("Indices", "aggDocType")
-                                         }
-                                   },
+	#query to be used for systemstatus 
+        esQuery = {"query": {
+                       "type" : {
+                            "value" : Config.get("Indices", "aggDocType")
+                                }
+                            },
 
-                                    "sort": {
-                                      "@timestamp": {
-                                                "order":"desc"
-                                                }
-                                        },
+                        "sort": {
+                        "@timestamp": {
+                            "order":"desc"
+                                      }
+                                },
 
-                                "size": Config.get("Indices", "aggQuerySize")
-                        }
+                        "size": Config.get("Indices", "aggQuerySize")
+                 }
+
+        while True:
 
 		#passes esQuery into queryIndex to get results of specified query
 		res = test.queryES(Config.get("Indices", "aggIndex"), Config.get("Indices", "aggDocType"), esQuery, es)
