@@ -6,6 +6,8 @@ import pprint
 from cParser import *
 import elasticsearch
 from datetime import datetime
+from elasticsearchConnection import Query
+
 
 class Shipper(object):
     def __init__(self, shipperType, configPath):
