@@ -1,4 +1,4 @@
-import elasticsearch5 #elasticsearch5 is used for clarity and stability due to ELK stack being 5.x.x
+import elasticsearch 
 from datetime import datetime
 
 class elasticsearchClient(object):
@@ -11,7 +11,7 @@ class elasticsearchClient(object):
         self._client_cert = client_cert
         self._client_key = client_key
         self._max_size = maxsize
-
+	self.es = ''
 
 	#attempts to initialize a client 
 	self.clientCreation()
@@ -21,14 +21,13 @@ class elasticsearchClient(object):
     def clientCreation(self):
 	
 	try:
-		self.es = elasticsearch5(self._host + ':' + self._port)
+		self.es = elasticsearch.Elasticsearch(self._host + ':' + str(self._port))
 		return True
 
 	except:
 		print("Failed to connect to elasticsearch.")
 		return False
        
-
 
 class Query(elasticsearchClient):
 	def __init__(self, host, port, timeout=10, client_cert='', client_key='', maxsize=5):
