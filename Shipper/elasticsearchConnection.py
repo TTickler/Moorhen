@@ -35,10 +35,25 @@ class Query(elasticsearchClient):
 
 
 	def queryES(self, index, doc_type, query_body):
-		
-		query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=query_body)
+		try:		
+			query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=query_body)
+
+		except:
+			print("Failed to get results from querying elasticsearch")
 		return query_results
 
 
 
+class Index(elasticsearchClient):
+	def __init__(self):
+		elasticsearchClient.__init__(host,port,timeout,client_cert, client_key, maxsize)
+
+        def putInto(self,index, doc_type ,body):
+
+		try:
+                	response = elasticsearch.index(index=index, doc_type=doc_type, body=body)
+		except:
+			print("Failed to index element.")
+
+		return response
 
