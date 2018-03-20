@@ -6,7 +6,7 @@ import time
 import pprint
 from datetime import datetime
 import ConfigParser
-
+from elasticsearchConnection import Query
 
 class indexHealth(object):
 	def __init__(self):
@@ -106,17 +106,6 @@ class indexHealth(object):
 								
 		return status
 
-
-	#returns true if sequential threshold is met which is configured in hubConfig.json
-	def sequentialThresholdMet(self, metric, elasticsearch):
-		
-
-
-		return True
-
-
-		return False
-
 	def statusMetricsChecker(self, category, metric, hits_source, totalCount, hwPiece, wildcard=False):
                             
 
@@ -170,16 +159,16 @@ class indexHealth(object):
 
 		return totalCount
 
-	def queryES(self, index, docType, esQuery, elasticsearch):
-		result = elasticsearch.search(index=index,doc_type=docType, body=esQuery)
-
-		return result
-		
-
 	
 	def putIntoIndex(self, body, elasticsearch):
 		response = elasticsearch.index(index="test",doc_type="indexstatus", body=body)
 		
+
+
+#replaces sequential threshold function from indexHealth interface to allow a more readable and less cohesive environment
+class SequentialHealth(object):
+	def __init__(self):
+		self.test = 5
 
 
 if __name__ == '__main__':
@@ -190,7 +179,9 @@ if __name__ == '__main__':
 	Config.read(os.getcwd() + "hubConfig.ini")		
 
 
-        es = elasticsearch.Elasticsearch("http://localhost:9200")
+
+	#change to take input from configuration file
+        es = elasticsearch.Elasticsearch("")
 	test = indexHealth(es)
 
 	#query to be used for systemstatus 
