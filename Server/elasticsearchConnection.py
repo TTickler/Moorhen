@@ -1,5 +1,7 @@
 import elasticsearch 
 from datetime import datetime
+import sys
+import json
 
 class elasticsearchClient(object):
     def __init__(self, host, port=9200, timeout=10, client_cert='', client_key='', maxsize=5):
@@ -29,7 +31,7 @@ class elasticsearchClient(object):
 	
 	#try/except not provided here as a failure of client creation indicates a failure of another component
 	#and should be sorted until Server/ modules continue operation	
-	elasticsearchInstance = elasticsearch.Elasticsearch(self._host, port=self._port)
+	elasticsearchInstance = elasticsearch.Elasticsearch([{'host': self._host, 'port': self._port}])
 
 	return elasticsearchInstance
        
@@ -41,10 +43,11 @@ class Query(elasticsearchClient):
 
 	def queryES(self, index, doc_type, query_body):
 		try:		
-			query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=query_body)
+			query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=json.dumps(query_body))
 
 		except:
-			print("Failed to get results from querying elasticsearch")
+			print("Failed to get results from querying elasticsearch. Exiting application. Check if elasticsearch cluster is running or if configuration is valid.")
+			sys.exit()
 		return query_results
 
 
