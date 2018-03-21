@@ -62,6 +62,12 @@ class Index(elasticsearchClient):
                 	response = elasticsearch.index(index=index, doc_type=doc_type, body=body)
 		except:
 			print("Failed to index element.")
+			
+			'''Major focus should be here. Should a failed index result in another attempt?
+			   Should the data be dropped entirely? Should there be a retry limit? Should data
+			   be pushed to a dead_queue after one, or more, attempts to index?'''
+
+			#put handler for failed index here
 
 		return response
 
