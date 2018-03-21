@@ -6,7 +6,7 @@ import time
 import pprint
 from datetime import datetime
 import ConfigParser
-import elasticsearchConnection 
+import elasticsearch_connection 
 
 class indexHealth(object):
 	def __init__(self):
@@ -181,8 +181,8 @@ if __name__ == '__main__':
 	print Config.sections()
 
 	
-	elasticsearch_query = elasticsearchConnection.Query(Config.get('elasticsearch', 'host'))
-	elasticsearch_index = elasticsearchConnection.Index(Config.get('elasticsearch', 'host'))
+	elasticsearch_query = elasticsearch_connection.Query(Config.get('elasticsearch', 'host'))
+	elasticsearch_index = elasticsearch_connection.Index(Config.get('elasticsearch', 'host'))
 
 	test = indexHealth()
 

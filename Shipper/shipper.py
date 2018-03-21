@@ -1,12 +1,14 @@
 import json
 import os
-import snmpInterface
+import snmp_interface
 import sys
 import pprint
-from cParser import *
+import c_parser
 import elasticsearch
 from datetime import datetime
-from elasticsearchConnection import Query
+
+#if used, change to 'import elasticsearch_connection' to be more pythonic
+#from elasticsearch_connection import Query
 
 
 class Shipper(object):
@@ -17,9 +19,9 @@ class Shipper(object):
         self._toShipOIDdict = {}
 
 
-	self.generalConfigParser = generalConfigParser()
-        self.hardwareParser = shipperConfigParser('hardware')
-        self.snmpInterface = snmpInterface.snmpInterface()
+	self.generalConfigParser = c_parser.generalConfigParser()
+        self.hardwareParser = c_parser.shipperConfigParser('hardware')
+        self.snmpInterface = snmp_interface.snmpInterface()
         #
         self.toShipOIDdict = self.hardwareParser.parsedDict
 
