@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
         while True:
 		#passes esQuery into queryIndex to get results of specified query
-		res = elasticsearch_query.queryES(Config.get("Indices", "aggIndex"), Config.get("Indices", "aggDocType"), esQuery)
+		res = elasticsearch_query.queryES(Config.get("Indices", "testIndex"), Config.get("Indices", "testDocType"), esQuery)
 		
 		print(test.getCurrent(5,5, res["hits"]["hits"][0]["_source"]), Config)
 		elasticsearch_index.putInto({"@timestamp": datetime.utcnow(),"groupBy": "3" ,"overallStatus": test.getCurrent(5,5, res["hits"]["hits"][0]["_source"])}, es)

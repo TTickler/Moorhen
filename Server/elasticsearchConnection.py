@@ -42,12 +42,12 @@ class Query(elasticsearchClient):
 
 
 	def queryES(self, index, doc_type, query_body):
-		try:		
-			query_results = elasticsearchClient.es.search(index=index, doc_type=doc_type, body=json.dumps(query_body))
-
-		except:
-			print("Failed to get results from querying elasticsearch. Exiting application. Check if elasticsearch cluster is running or if configuration is valid.")
-			sys.exit()
+	#	try:		
+		query_results = self.instance.search(index=index, doc_type=doc_type, body=json.dumps(query_body))
+		print(query_results)
+	#	except:
+	#		print("Failed to get results from querying elasticsearch. Exiting application. Check if elasticsearch cluster is running or if configuration is valid.")
+	#		sys.exit()
 		return query_results
 
 
