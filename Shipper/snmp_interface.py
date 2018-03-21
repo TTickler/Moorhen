@@ -22,7 +22,7 @@ class snmpInterface(object):
 
         cwd = os.getcwd()
         try:
-            with open(cwd + '/../Config/generalConfig.json') as config:
+            with open(cwd + '/Config/generalConfig.json') as config:
                 configDict = json.load(config)
         except:
             print('/nError loading generalConfig.json.')

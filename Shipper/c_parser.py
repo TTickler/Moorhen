@@ -57,7 +57,7 @@ class cParser(object):
 # child class of cParser providing an interface for parsing /Config/generalConfig.json
 class generalConfigParser(cParser):
     def __init__(self):
-        cParser.__init__(self, os.getcwd() + "/../Config/generalConfig.json")
+        cParser.__init__(self, os.getcwd() + "/Config/generalConfig.json")
 	self._hostName = self.configDict['clientInfo']['name']
 
 	#sets point of contact information parsed from generalConfig.json
@@ -87,7 +87,7 @@ class generalConfigParser(cParser):
 # child class of cParser providing an interface for parsing /Config/shipperConfig.json
 class shipperConfigParser(cParser):
     def __init__(self, shipperType):
-        cParser.__init__(self, os.getcwd() + "/../Config/shipperConfig.json")
+        cParser.__init__(self, os.getcwd() + "/Config/shipperConfig.json")
 
         self._nonNestedOIDs = {}
         self._nestedOIDs = {}

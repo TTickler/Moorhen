@@ -23,7 +23,7 @@ if __name__ == '__main__':
 		#should be changed to being parsed from generalConfig.py for host/port
 		es = elasticsearch.Elasticsearch('http://localhost:9200')
 		
-		ship = shipper.Shipper("hardware", os.getcwd() + '/../Config/shipperConfig.json')
+		ship = shipper.Shipper("hardware", os.getcwd() + '/Config/shipperConfig.json')
 		pprint.pprint(ship.toShipOIDdict)
 		response = es.index(index="test",doc_type="systemstatus", body=ship.toShipOIDdict)
 		
