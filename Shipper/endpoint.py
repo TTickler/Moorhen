@@ -3,6 +3,58 @@ import socket
 #for future use to allow multiple endpoints to have
 #data shipped to them asynchro
 import threading
+import Queue
+import logging
+import time 
+
+
+
+
+'''First in first out queue interface for endpoints to have for messages attempting to reach 
+	specified endpoint. 
+
+	Ex. Logstash-1 is an Endpoint that has been successfully instantiated and connected through
+		a TCP socket. A message configured to be shipped to Logstash-1 will be placed in the 
+		queue of the Logstash-1 Endpoint object.'''
+class FIFOQueue(object):
+	def __init__(self):
+			
+		#instantiates queue object. maxsize argument 
+		#allows configuration of max queue size allowed.
+		#Anything less than or equal to zero means the queue size is 
+		#infinite. I chose -1 to make it clear as 0 would appear to be
+		#saying the queue cannot have any elements in it
+		self.queue = Queue.Queue(maxsize=-1)
+
+		#setup logger here or in main interface for Shipper
+	
+
+	@property
+	def queue_size(self):
+		return self.queue.qsize()
+
+	
+	def dequeue(self):
+		
+		#attempts to dequeue the first element
+		#if it fails the queue is empty
+		try:
+			self.queue.get()
+		except:
+			print("Queue is empty.")
+
+	def enqueue(self):
+		self.queue. 
+
+	#returns True if queue is empty and false if message is in queue
+	def is_empty(self):
+		
+		if self.queue_size == 0:
+			return True
+		else:
+			return False
+
+
 
 class Endpoint(object):
 
