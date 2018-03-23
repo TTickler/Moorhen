@@ -30,28 +30,62 @@ class Endpoint(object):
 		self._port = port
 
 	def init_socket(self):
-		try 
+		try:
+			print("Creating Socket...")
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			
 
-	def connect(self):
+		except socket.error as message:
+			print(message) 
+
+	#attempts to close socket
+	def close(self, socket):
+		try:
+			socket.close()
+			print("Successfully closed socket: " + self.address + ":" + self.port)
+
+		except:
+			print("Failed to close socket: " + self.address + ":" + self.port)
+
+	''''''
+	def sock_connect(self):
 		
 		if self.address == '' or self.port == 0:
 			return False
 
 		else:
 			try:
-				sock = socket.socket(
+				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				sock.
 
 			except socket.error as message:
 				print(message)
+
+				#Change from hardcoded value to configurable value
+				#Prefer to have a default value of 3-5 connection attempts before
+				#closing thread
+				for attempt in range(0, max_conn_attempts)
+					print("\n\nAttempting to connect again...")
+					self.sock_connect(
 				
 				return False
 
 
-	#add way to reset connection
-	#def resetfunction()
-
+	'''Returns True if socket connection is reset and connected
+		successfully. False if otherwise.'''
+	def reset_connection(self, socket):
+		
+		try:
+			socket.connect(self.address, self.port)
+			print("Successfully reset socket connection")
+			return True
+		except:
+			print("Failed to reset socket connection")
+			return False
+	
 	def send(self, message):
 		
 		try:
 
 		except socket.error as msg:	
+			print("Message failed to send over port " + self.port + " to host " + self.address )
