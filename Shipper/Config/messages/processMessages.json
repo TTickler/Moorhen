@@ -1,0 +1,14 @@
+{
+"messages":[
+   {
+      "type": "process",
+      "endpoints": ["logstash-1", "logstash-2"],
+      "target":{},
+      "focus": {}
+   },
+      "type":"process",
+      "endpoints": ["logstash-1", "logstash-2"],
+      "target":{},
+      "focus":{}
+   ]
+}
