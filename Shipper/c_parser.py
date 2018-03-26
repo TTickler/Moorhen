@@ -142,7 +142,7 @@ class messagesParser(cParser):
 
     #checks if passed in message is valid according to set JSON schema
     #returns True if it is valid and false otherwise
-    def is_valid_schema(self, message):
+    def is_valid_schema(self, message_json):
 	
 
 	'''These are placeholders for currently allowed fields in each relevant
@@ -150,17 +150,55 @@ class messagesParser(cParser):
 		nested fields are currently stored in a dictionary as this allows mutability
 		for future functionality additions without much change'''
 	dir_message_fields = ["monitor_type", "path", "focus", "endpoints"]
-	dir_message_nested_fields = {"focus": ["size", "stalling_files"]}
+	dir_message_nested_fields = {}
 
 	proc_message_fields = ["monitor_type", "", "focus", "endpoints"]
-	proc_message_nested_fields = {"target": ["PID"], "focus": ["mem_used", "cpu_used", "time_alive"]}
+	proc_message_nested_fields = {"target": ["PID"]}
 
 	metric_message_fields = ["monitor_type", "endpoints", "OIDs"]
 	metric_message_nested_fields = {"OIDS": ["nested", "non_nested"]}
 
-        return True
+	    if "monitor_type" in message_json:
+	        if self.get_monitor_type(message_json)  == "directory":
+	            validity = self.fields_exist(message_json, dir_message_fields, dir_message_nested_fields)
+		
+		elif self.get_monitor_type(message_json_ == "process":
+		    validity = self.fields_exist(message_json, proc_message_fields, proc_message_nested_fields)
 
-        return False
+		else:
+		    validity = self.fields_exist(message_json, metric_message_fields, metric_message_nested_fields)
+
+		if validity == True:
+		    return True
+
+		else:
+		    return False
+
+	    else:
+	        return False
+
+    def fields_exist(self, message_json, expected_msg_fields, expected_msg_nested_fields):
+	
+	#checks if all expected fields are found in root of JSON object
+	#returns false if ANY expected_field is not found in JSON object
+	for expected_field in expected_msg_fields:
+		if expected_field not in message_json:
+		    return False
+		
+		else:
+		    continue 
+	
+	#checks if all expected nested metrics exist 
+	#returns False if ANY expected_nested_field is not found in JSON object
+	for expected_field in expected_msg_nested_fields:
+	    for expected_nested_field in expected_field:
+	        if expected_nested_field not in message_json[expected_field]
+		    return False
+		
+		else:
+		    continue 
+	
+	return True
 
     def parse_json(self, filename):
 

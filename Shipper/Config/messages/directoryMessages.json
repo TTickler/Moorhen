@@ -1,7 +1,10 @@
 {
-   "type": "Directory",
-   "path": "",
-   "endpoints": ["logstash-1"],
-   "focus": {}    
-
+"messages":[
+   {	
+      "type": "Directory",
+      "path": "",
+      "endpoints": ["logstash-1"],
+      "focus": {}    
+   }
+  ]
 }
