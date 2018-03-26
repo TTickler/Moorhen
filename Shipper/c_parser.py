@@ -132,12 +132,31 @@ class messagesParser(cParser):
 	return initialized_msg_object
 
     def get_endpoints(self, message):
+	return endpoints
+
     def get_monitor_type(self, message):
+	return message["monitor_type"]
+
     def get_focus(self, message):
+	return message["focus"]
 
     #checks if passed in message is valid according to set JSON schema
     #returns True if it is valid and false otherwise
     def is_valid_schema(self, message):
+	
+
+	'''These are placeholders for currently allowed fields in each relevant
+		message type. Root level fields can be stored in a simple list while 
+		nested fields are currently stored in a dictionary as this allows mutability
+		for future functionality additions without much change'''
+	dir_message_fields = ["monitor_type", "path", "focus", "endpoints"]
+	dir_message_nested_fields = {"focus": ["size", "stalling_files"]}
+
+	proc_message_fields = ["monitor_type", "", "focus", "endpoints"]
+	proc_message_nested_fields = {"target": ["PID"], "focus": ["mem_used", "cpu_used", "time_alive"]}
+
+	metric_message_fields = ["monitor_type", "endpoints", "OIDs"]
+	metric_message_nested_fields = {"OIDS": ["nested", "non_nested"]}
 
         return True
 

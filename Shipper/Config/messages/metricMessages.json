@@ -2,6 +2,7 @@
 "messages":[
    {
       "type": "Metrics",
+      "endpoints": ["logstash-1"],
       "metrics":{
 		
 
