@@ -102,7 +102,7 @@ class messagesParser(cParser):
 	for filename in filenames:
 	    try:
 	        with open(self._messages_path + filename) as curr_json:
-	            found_json = json.loads(curr_json)	
+	            found_json = json.load(curr_json)	
 
             except:
                 print("\nError Parsing " + filename + ". Not valid JSON.")
@@ -111,9 +111,10 @@ class messagesParser(cParser):
             for message_json in found_json["messages"]:
 	        
 		#checks if message is valid according to schema
-		if is_valid_schema(message_json):
+		if self.is_valid_schema(message_json):
 		    #self.iniialized_message() returns a fully initialized Message object with unique counter ID 
-		    temp_message = self.initialized_message(message.Message(id_counter), message_json)
+		    temp_message = self.initialized_message(id_counter, message_json)
+		    messages[temp_message.monitor_type].append(temp_message)
 
 		else:
 		    continue
@@ -122,7 +123,7 @@ class messagesParser(cParser):
         return messages
 
 
-    def initialized_message(id_counter, message_json):
+    def initialized_message(self, id_counter, message_json):
 	
 	#instantiates Message object
 	initialized_msg_object = message.Message(id_counter)
@@ -132,7 +133,7 @@ class messagesParser(cParser):
 	return initialized_msg_object
 
     def get_endpoints(self, message):
-	return endpoints
+	return message["endpoints"]
 
     def get_monitor_type(self, message):
 	return message["monitor_type"]
@@ -217,12 +218,7 @@ class messagesParser(cParser):
 
 
 test = messagesParser()
-with open(os.getcwd() + "/Config/messages/processMessages.json") as ts:
-    testMessage = json.load(ts)
-
-for message in testMessage["messages"]:
-    print(message)
-    print(test.is_valid_schema(message))
+print(test.messages)
 
 
 
