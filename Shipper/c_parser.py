@@ -96,6 +96,9 @@ class messagesParser(cParser):
 	
 	messages = {"process":[], "directory":[], "metrics":[]}
 	filenames = self.get_filenames()
+
+        #counter for creating unique message objects. Acts as an id. 
+        id_counter = 0
 	for filename in filenames:
 	    	try:
 		    with open(self._messages_path + filename) as curr_json:
@@ -105,16 +108,32 @@ class messagesParser(cParser):
             	    print("\nError Parsing " + filename + ". Not valid JSON.")
 		    continue 
 
-	    for message in found_json["messages"]:
+	    for message_json in found_json["messages"]:
 	        
 		#checks if message is valid according to schema
-		if is_valid_schema(message):
-		   self.initialize_message(message) 
+		if is_valid_schema(message_json):
+		    #self.iniialized_message() returns a fully initialized Message object with unique counter ID 
+		    temp_message = self.initialized_message(message.Message(id_counter), message_json)
+
 		else:
 		    continue
         
 
         return messages
+
+
+    def initialized_message(id_counter, message_json):
+	
+	#instantiates Message object
+	initialized_msg_object = message.Message(id_counter)
+	initialized_msg_object.endpoints = self.get_endpoints(message_json)
+	initialized_msg_object.monitor_type = self.get_monitor_type(message_json)
+
+	return initialized_msg_object
+
+    def get_endpoints(self, message):
+    def get_monitor_type(self, message):
+    def get_focus(self, message):
 
     #checks if passed in message is valid according to set JSON schema
     #returns True if it is valid and false otherwise
@@ -125,6 +144,9 @@ class messagesParser(cParser):
         return False
 
     def parse_json(self, filename):
+
+
+        return parsed_json
 
 
     #returns all filenames in messages directory

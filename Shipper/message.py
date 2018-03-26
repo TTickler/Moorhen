@@ -8,7 +8,8 @@ class Message(object):
 		self._endpoints = []
 		self._timestamp = ''
 		self._payload = {}
-		self._tags 
+		self._tags = []
+		self._monitor_type = ''
 
 	'''Acts similar to __init__(), but provides a more readable point of 
 		"entry" to this interface. This way it's abundantly clear that 
@@ -50,5 +51,11 @@ class Message(object):
 	def tags(self, tags):
 		self._tags = tags
 
+	@property
+	def monitor_type(self):
+		return self._monitor_type 
 
+	@monitor_type.setter
+	def monitor_type(self, monitor_type):
+		self._monitor_type = monitor_type
 
