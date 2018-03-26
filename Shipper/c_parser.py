@@ -100,15 +100,15 @@ class messagesParser(cParser):
         #counter for creating unique message objects. Acts as an id. 
         id_counter = 0
 	for filename in filenames:
-	    	try:
-		    with open(self._messages_path + filename) as curr_json:
-		        found_json = json.loads(curr_json)	
+	    try:
+	        with open(self._messages_path + filename) as curr_json:
+	            found_json = json.loads(curr_json)	
 
-		except:
-            	    print("\nError Parsing " + filename + ". Not valid JSON.")
-		    continue 
+            except:
+                print("\nError Parsing " + filename + ". Not valid JSON.")
+		continue 
 
-	    for message_json in found_json["messages"]:
+            for message_json in found_json["messages"]:
 	        
 		#checks if message is valid according to schema
 		if is_valid_schema(message_json):
@@ -152,47 +152,47 @@ class messagesParser(cParser):
 	dir_message_fields = ["monitor_type", "path", "focus", "endpoints"]
 	dir_message_nested_fields = {}
 
-	proc_message_fields = ["monitor_type", "", "focus", "endpoints"]
+	proc_message_fields = ["monitor_type", "target","focus", "endpoints"]
 	proc_message_nested_fields = {"target": ["PID"]}
 
 	metric_message_fields = ["monitor_type", "endpoints", "OIDs"]
 	metric_message_nested_fields = {"OIDS": ["nested", "non_nested"]}
 
-	    if "monitor_type" in message_json:
-	        if self.get_monitor_type(message_json)  == "directory":
-	            validity = self.fields_exist(message_json, dir_message_fields, dir_message_nested_fields)
+	if "monitor_type" in message_json:
+            if self.get_monitor_type(message_json)  == "directory":
+	        validity = self.fields_exist(message_json, dir_message_fields, dir_message_nested_fields)
 		
-		elif self.get_monitor_type(message_json_ == "process":
-		    validity = self.fields_exist(message_json, proc_message_fields, proc_message_nested_fields)
-
-		else:
-		    validity = self.fields_exist(message_json, metric_message_fields, metric_message_nested_fields)
-
-		if validity == True:
-		    return True
-
-		else:
-		    return False
+	    elif self.get_monitor_type(message_json) == "process":
+       	        validity = self.fields_exist(message_json, proc_message_fields, proc_message_nested_fields)
 
 	    else:
-	        return False
+		validity = self.fields_exist(message_json, metric_message_fields, metric_message_nested_fields)
+
+	    if validity == True:
+                return True
+
+	    else:
+		return False
+
+	else:
+            return False
 
     def fields_exist(self, message_json, expected_msg_fields, expected_msg_nested_fields):
 	
 	#checks if all expected fields are found in root of JSON object
 	#returns false if ANY expected_field is not found in JSON object
 	for expected_field in expected_msg_fields:
-		if expected_field not in message_json:
-		    return False
+	    if expected_field not in message_json:
+	        return False
 		
-		else:
-		    continue 
-	
+	    else:
+	        continue 
+		
 	#checks if all expected nested metrics exist 
 	#returns False if ANY expected_nested_field is not found in JSON object
 	for expected_field in expected_msg_nested_fields:
-	    for expected_nested_field in expected_field:
-	        if expected_nested_field not in message_json[expected_field]
+	    for expected_nested_field in message_json[expected_field]:
+	        if expected_nested_field not in message_json[expected_field]:
 		    return False
 		
 		else:
@@ -209,11 +209,21 @@ class messagesParser(cParser):
     #returns all filenames in messages directory
     def get_filenames(self):
     
-    filenames = []
-    for filename in os.listdir(self._messages_path):
-        filenames.append(filename)
+        filenames = []
+        for filename in os.listdir(self._messages_path):
+            filenames.append(filename)
 
-    return filenames
+        return filenames
+
+
+test = messagesParser()
+with open(os.getcwd() + "/Config/messages/processMessages.json") as ts:
+    testMessage = json.load(ts)
+
+for message in testMessage["messages"]:
+    print(message)
+    print(test.is_valid_schema(message))
+
 
 
 
