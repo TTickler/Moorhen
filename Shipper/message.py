@@ -2,7 +2,9 @@ import json
 
 
 class Message(object):
-	def __init__(self):
+	def __init__(self, number):
+
+		self._number = number
 		self._endpoints = []
 		self._timestamp = ''
 		self._payload = {}

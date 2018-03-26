@@ -1,6 +1,7 @@
 import json
 import os
 import pprint
+import message
 
 
 # interface for parsing configuration files from /Config
@@ -88,9 +89,29 @@ class messagesParser(cParser):
     def __init__(self):
 	self._messages_path = os.getcwd() + "/Config/messages/"
 
+
+    #updates messages dict accordingly based on valid messages with message objects
     @property
     def messages(self):
 	
+	messages = {"process":[], "directory":[], "metrics":[]}
+	filenames = self.get_filenames()
+	for filename in filenames:
+	    	try:
+		    with open(self._messages_path + filename) as curr_json:
+		        found_json = json.loads(curr_json)	
+
+		except:
+            	    print("\nError Parsing " + filename + ". Not valid JSON.")
+		    continue 
+
+	    for message in found_json["messages"]:
+	        
+		#checks if message is valid according to schema
+		if is_valid_schema(message):
+		   self.initialize_message(message) 
+		else:
+		    continue
         
 
         return messages
