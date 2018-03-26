@@ -115,7 +115,7 @@ class messagesParser(cParser):
 		    #self.iniialized_message() returns a fully initialized Message object with unique counter ID 
 		    temp_message = self.initialized_message(id_counter, message_json)
 		    messages[temp_message.monitor_type].append(temp_message)
-
+		    id_counter += 1
 		else:
 		    continue
         
@@ -218,8 +218,14 @@ class messagesParser(cParser):
 
 
 test = messagesParser()
-print(test.messages)
-
+#print(test.messages)
+objArray = test.messages
+for mon_type in objArray:
+    for obj in objArray[mon_type]:
+	print("\nObject ID/Message Number: " + str(obj._number))
+        print("Monitor Type: " + obj.monitor_type)
+        print("Endpoints: " + str(obj.endpoints))
+	print("\n")
 
 
 
