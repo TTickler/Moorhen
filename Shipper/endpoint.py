@@ -43,8 +43,8 @@ class FIFOQueue(object):
 		except:
 			print("Queue is empty.")
 
-	def enqueue(self):
-		self.queue. 
+	def enqueue(self, message):
+		self.queue.put(message) 
 
 	#returns True if queue is empty and false if message is in queue
 	def is_empty(self):
