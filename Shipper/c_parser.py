@@ -83,73 +83,37 @@ class generalConfigParser(cParser):
     def pointOfContact(self, PoC):
 	self._pointOfContact = PoC
 
-
-# child class of cParser providing an interface for parsing /Config/shipperConfig.json
-class shipperConfigParser(cParser):
-    def __init__(self, shipperType):
-        cParser.__init__(self, os.getcwd() + "/Config/shipperConfig.json")
-
-        self._nonNestedOIDs = {}
-        self._nestedOIDs = {}
-
-        self._shipperType = shipperType
-        self.parsedDict = self.configDict
-        self.nonNestedOIDs = self.configDict
-        self.nestedOIDs = self.configDict
+'''Child class of cParser. Crawls, and parses, all valid messages from all files '''
+class messagesParser(cParser):
+    def __init__(self):
+	self._messages_path = os.getcwd() + "/Config/messages/"
 
     @property
-    def parsedDict(self):
-        return self._parsedDict
+    def messages(self):
+	
+        
 
-    @parsedDict.setter
-    def parsedDict(self, dictData):
-        self._parsedDict = self.configDict['shipperTypes'][self._shipperType]
+        return messages
 
-    @property
-    def oidDict(self):
-        return self._oidDict
+    #checks if passed in message is valid according to set JSON schema
+    #returns True if it is valid and false otherwise
+    def is_valid_schema(self, message):
 
-    @oidDict.setter
-    def oidDict(self, dictData):
-        self._oidDict = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']
+        return True
 
-    @property
-    def nonNestedOIDs(self):
-        return self._nonNestedOIDs
+        return False
 
-    @nonNestedOIDs.setter
-    def nonNestedOIDs(self, dictData):
-        for key in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']:
-            if key != 'nestedMetrics':
-                self._nonNestedOIDs[key] = self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs'][key]
-
-    # Handles parsing/returning nested metrics based off of shipperConfig.json schema under "OIDs" field
-    @property
-    def nestedOIDs(self):
-        return self._nestedOIDs
+    def parse_json(self, filename):
 
 
-    #sets _nestedOIDs to the parsed dictionary from shipperConfig.json nestedOID field
-    @nestedOIDs.setter
-    def nestedOIDs(self, dictData):
-        temp_dict = {}
+    #returns all filenames in messages directory
+    def get_filenames(self):
+    
+    filenames = []
+    for filename in os.listdir(self._messages_path):
+        filenames.append(filename)
 
-        for element in self.configDict['shipperTypes'][self._shipperType]['metrics']['OIDs']['nestedMetrics']:
-            for metricTopic in element:
-                temp_dict[metricTopic] = {}
-                for topicElement in element[metricTopic]:
-                    metricName = topicElement['Name']
-                    del topicElement['Name']
-                    temp_dict[metricTopic][metricName] = topicElement
-        self._nestedOIDs = temp_dict
+    return filenames
 
 
-    @property
-    def shipperTypes(self):
-        shipperTypes = []
-
-        for types in self.configDict['shipperTypes']:
-            shipperTypes.append(types)
-
-        return shipperTypes
 
