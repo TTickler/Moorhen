@@ -220,9 +220,11 @@ class messagesParser(cParser):
 test = messagesParser()
 #print(test.messages)
 objArray = test.messages
+print("\nObject Array: " + str(objArray))
 for mon_type in objArray:
     for obj in objArray[mon_type]:
-	print("\nObject ID/Message Number: " + str(obj._number))
+	print("\nObject: " + str(obj))
+	print("Object ID/Message Number: " + str(obj._number))
         print("Monitor Type: " + obj.monitor_type)
         print("Endpoints: " + str(obj.endpoints))
 	print("\n")
