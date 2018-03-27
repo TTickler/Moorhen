@@ -126,7 +126,7 @@ class Endpoint(object):
 				#Change from hardcoded value to configurable value
 				#Prefer to have a default value of 3-5 connection attempts before
 				#closing thread
-				for attempt in range(0, max_conn_attempts)
+				for attempt in range(0, max_conn_attempts):
 					print("\n\nAttempting to connect again...")
 					sock.connect(self.address, self.port)
 				
