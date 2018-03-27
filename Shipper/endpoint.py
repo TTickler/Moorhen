@@ -66,10 +66,11 @@ class Endpoint(object):
 
 	#As of now, no init parameters needed as
 	#goal is to be property based Endpoint
-	def __init__(self, address, port):
+	#name argument is for unique identifier of each object
+	def __init__(self, name):
 
-		self._address = address
-		self._port = port
+		self._address = ''
+		self._port = 0
 
 	@property 
 	def address(self):
@@ -148,6 +149,7 @@ class Endpoint(object):
 	def send(self, message):
 		
 		try:
+			print("CHANGE THIS!!!!!")
 
 		except socket.error as msg:	
 			print("Message failed to send over port " + str(self.port) + " to host " + self.address)
@@ -155,6 +157,8 @@ class Endpoint(object):
 
 
 ''''''
-def run_endpoint():
-
-
+def run_endpoint(endpoint_address, endpoint_port, endpoint_name):
+	endpoint_object = Endpoint(endpoint_name)
+	endpoint_object.address = endpoint_address
+	endpoint_object.port = endpoint_port
+	

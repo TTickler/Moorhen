@@ -6,7 +6,7 @@ import time
 import pprint
 import elasticsearch
 from datetime import datetime
-import shipper, message, c_parser, monitor
+import shipper, message, c_parser, monitor, endpoint
 import ConfigParser
 import threading 
 
@@ -40,21 +40,23 @@ if __name__ == '__main__':
     endpoints = []
     for message_type in message_objects_dict:
 	for message_object in message_objects_dict[message_type]:
-	    for endpoint in message_object.endpoints:
-                if endpoint in endpoints:
+	    for endP in message_object.endpoints:
+                if endP in endpoints:
 	            continue
 	        else:
-	            endpoints.append(endpoint)
+	            endpoints.append(endP)
 
     
     print(config_parser.sections())
-
+    endpoint_threads = []
     for section in config_parser.sections():
-	try:
-
-
-	except:
-	    print("Invalid section configuration in endpoints.ini. Check format.")
+	#try:
+	thread = threading.Thread(target=endpoint.run_endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section))
+	endpoint_threads.append(thread)
+	thread.start()
+	print(thread)
+	#except:
+	 #   print("Invalid section configuration in endpoints.ini. Check format.")
 
     #while True:
 #	print(messages)
