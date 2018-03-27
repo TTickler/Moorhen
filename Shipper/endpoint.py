@@ -44,7 +44,13 @@ class FIFOQueue(object):
 			print("Queue is empty.")
 
 	def enqueue(self, message):
-		self.queue.put(message) 
+
+		try:
+
+			self.queue.put(message) 
+
+		except:
+			print("Failed to place " + str(message) + " into " + str(self.queue))
 
 	#returns True if queue is empty and false if message is in queue
 	def is_empty(self):
