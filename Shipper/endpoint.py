@@ -100,13 +100,17 @@ class Endpoint(object):
 	def close(self, socket):
 		try:
 			socket.close()
-			print("Successfully closed socket: " + self.address + ":" + self.port)
+			print("Successfully closed socket: " + self.address + ":" + str(self.port))
 
 		except:
-			print("Failed to close socket: " + self.address + ":" + self.port)
+			print("Failed to close socket: " + self.address + ":" + str(self.port))
 
 	''''''
 	def sock_connect(self):
+
+		#originally was to be provided as configurable, but 
+		#no reason to pollute configuration files. Easily changeable here
+		max_conn_attempts = 5
 		
 		if self.address == '' or self.port == 0:
 			return False
@@ -114,7 +118,7 @@ class Endpoint(object):
 		else:
 			try:
 				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				sock.
+				sock.connect(self.address, self.port)
 
 			except socket.error as message:
 				print(message)
@@ -124,7 +128,7 @@ class Endpoint(object):
 				#closing thread
 				for attempt in range(0, max_conn_attempts)
 					print("\n\nAttempting to connect again...")
-					self.sock_connect(
+					sock.connect(self.address, self.port)
 				
 				return False
 
@@ -146,4 +150,4 @@ class Endpoint(object):
 		try:
 
 		except socket.error as msg:	
-			print("Message failed to send over port " + self.port + " to host " + self.address )
+			print("Message failed to send over port " + str(self.port) + " to host " + self.address)
