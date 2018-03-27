@@ -1,0 +1,24 @@
+{
+"messages":[
+   {
+      "monitor_type": "process",
+      "endpoints": ["logstash-1", "logstash-2"],
+      "target":{
+		"PID": "1235"
+	      },
+      "focus": ["mem_used", "cpu_used"]
+   },
+
+   {
+      "monitor_type":"process",
+      "endpoints": ["logstash-1", "kafka-1"],
+      "target":{
+		"PID": "1234"
+	      },
+      "focus":["mem_used", "cpu_used", "time_alive"]	
+	
+	    
+   }
+  ]
+}
+
