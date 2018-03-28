@@ -39,9 +39,11 @@ class FIFOQueue(object):
 		#attempts to dequeue the first element
 		#if it fails the queue is empty
 		try:
-			self.queue.get()
+			element = self.queue.get()
 		except:
 			print("Queue is empty.")
+
+		return element
 
 	def enqueue(self, message):
 
@@ -60,15 +62,20 @@ class FIFOQueue(object):
 		else:
 			return False
 
+	def print_queue(self):
+	    
+	    for element in list(self.queue):
+		print(element)
 
 
-class Endpoint(object):
+
+class Endpoint(threading.Thread):
 
 	#As of now, no init parameters needed as
 	#goal is to be property based Endpoint
 	#name argument is for unique identifier of each object
-	def __init__(self, name):
-
+	def __init__(self, name, address, port):
+		threading.Thread.__init__(self)
 		self._address = ''
 		self._port = 0
 		self.fifo_queue = FIFOQueue()
@@ -156,14 +163,9 @@ class Endpoint(object):
 
 
 
-''''''
-def run_endpoint(endpoint_address, endpoint_port, endpoint_name):
-	endpoint_object = Endpoint(endpoint_name)
-	endpoint_object.address = endpoint_address
-	endpoint_object.port = endpoint_port
-
-	
-	while True:
-		print("THREAD: " + endpoint_name)
-		print(endpoint_object.fifo_queue)
-		time.sleep(5)
+	''''''
+	def run(self):
+			
+		while True:
+			print("THREAD: " + self.name)
+			time.sleep(5)

@@ -51,16 +51,22 @@ if __name__ == '__main__':
     endpoint_threads = []
     for section in config_parser.sections():
 	#try:
-	thread = threading.Thread(target=endpoint.run_endpoint, args=(config_parser.get(section, "host"), config_parser.get(section, "port"), section))
+	thread = endpoint.Endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section)
 	endpoint_threads.append(thread)
 	thread.daemon = True
+	thread.name = section
 	thread.start()
-	print(thread)
 	#except:
 	 #   print("Invalid section configuration in endpoints.ini. Check format.")
 
-    #while True:
-#	print(messages)
+    i = 0
+    while True:
+	for thread in endpoint_threads:
+	    print(endpoint_threads)
+	    thread.fifo_queue.enqueue("NICENICE " + str(i))
+	    i += 1
+	    print(thread.fifo_queue.dequeue())
+	    time.sleep(5)
 
 
 
