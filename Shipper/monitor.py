@@ -43,8 +43,10 @@ class Monitor(object):
 
 	cmd_results = ""
 
-	for focus_mapping in focus_mappings:
-	    if focus in 
+	for focus in focus_dict:
+	    for mapping in focus_dict[focus]
+		if mapping in monitor_mapping.cfg.sections():
+		    	
 	    
 
 	return {"": cmd_results}
