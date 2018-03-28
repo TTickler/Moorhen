@@ -2,7 +2,7 @@
 "messages":[
    {
       "monitor_type": "Metrics",
-      "endpoints": ["logstash-1"],
+      "endpoints": ["logstash-1", "test-1"],
       "metrics":{
 		
 

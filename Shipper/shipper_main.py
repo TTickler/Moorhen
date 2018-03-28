@@ -35,7 +35,7 @@ if __name__ == '__main__':
     metric_monitor = monitor.MetricMonitor()
     
     message_objects_dict = msg_parser.messages
- 
+    print(message_objects_dict) 
     #grabs list of all valid messages in regards to set schema
     endpoints = []
     for message_type in message_objects_dict:
@@ -60,16 +60,37 @@ if __name__ == '__main__':
 	 #   print("Invalid section configuration in endpoints.ini. Check format.")
 
     i = 0
+
     while True:
-	for thread in endpoint_threads:
-	    print(endpoint_threads)
-	    thread.fifo_queue.enqueue("NICENICE " + str(i))
-	    i += 1
-	    print(thread.fifo_queue.dequeue())
-	    time.sleep(5)
+	for message_type in message_objects_dict:
+	    for message_object in message_objects_dict[message_type]:
+	        if message_object.monitor_type == "directory":
+		    try:
+		        handled_results = dir_monitor.results(message_object)
+		    except:
+		        print("Directory handler instantiation failed...")
+
+	        elif message_object.monitor_type == "process":
+                    try:
+                        handled_results = proc_monitor.results(message_object)
+                    except:
+                        print("Process handler instantiation failed...")
+
+	        else:
+                    try:
+                        handled_results = metric_monitor.results(message_object)
+                    except:
+                        print("Directory handler instantiation failed...")
+
+	        for endpoint in message_object.endpoints:
+		    try:
+		        endpoint_threads.index(endpoint).fifo_queue.enqueue(handled_results)
+
+		    except:
+		        print("Failed to enqueue handled results for: " + str(endpoint) + " with message: " + str(message_object._number))
 
 
-
-
+	time.sleep(5)
+	
 
 

@@ -3,7 +3,7 @@
    {	
       "monitor_type": "directory",
       "path": "",
-      "endpoints": ["logstash-1"],
+      "endpoints": ["logstash-1", "test"],
       "focus": {}    
    }
   ]
