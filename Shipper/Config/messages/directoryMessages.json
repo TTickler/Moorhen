@@ -4,7 +4,16 @@
       "monitor_type": "directory",
       "path": "",
       "endpoints": ["logstash-1", "test"],
-      "focus": {}    
+      "focus": {
+	   "file_size":{
+		"file": "c_parser.py"
+         	   },
+	   "age":{
+		"file": "c_parser.py"
+		}
+
+
+	     }    
    }
   ]
 }

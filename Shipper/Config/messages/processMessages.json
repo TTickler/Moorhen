@@ -6,7 +6,12 @@
       "target":{
 		"PID": "1235"
 	      },
-      "focus": ["mem_used", "cpu_used"]
+      "focus": ["used_mem":{
+			"PID": "1235"
+			},
+		 "used_cpu":{
+			"PID": "1235"
+			}]
    },
 
    {
@@ -15,7 +20,7 @@
       "target":{
 		"PID": "1234"
 	      },
-      "focus":["mem_used", "cpu_used", "time_alive"]	
+      "focus":{"used_cpu":{}, "used_mem":{}, "time_alive":{}}	
 	
 	    
    }
