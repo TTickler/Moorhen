@@ -51,8 +51,9 @@ if __name__ == '__main__':
     endpoint_threads = []
     for section in config_parser.sections():
 	#try:
-	thread = threading.Thread(target=endpoint.run_endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section))
+	thread = threading.Thread(target=endpoint.run_endpoint, args=(config_parser.get(section, "host"), config_parser.get(section, "port"), section))
 	endpoint_threads.append(thread)
+	thread.daemon = True
 	thread.start()
 	print(thread)
 	#except:

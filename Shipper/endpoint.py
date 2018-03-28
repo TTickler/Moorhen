@@ -71,7 +71,7 @@ class Endpoint(object):
 
 		self._address = ''
 		self._port = 0
-
+		self.fifo_queue = FIFOQueue()
 	@property 
 	def address(self):
 		return self._address
@@ -161,4 +161,9 @@ def run_endpoint(endpoint_address, endpoint_port, endpoint_name):
 	endpoint_object = Endpoint(endpoint_name)
 	endpoint_object.address = endpoint_address
 	endpoint_object.port = endpoint_port
+
 	
+	while True:
+		print("THREAD: " + endpoint_name)
+		print(endpoint_object.fifo_queue)
+		time.sleep(5)
