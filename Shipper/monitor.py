@@ -145,13 +145,15 @@ class ProcessMonitor(Monitor):
 
 
 test = Monitor()
-test_focus_dict = {"file_size": {"file": "./endpoint.py"}}
+test_focus_dict = {"file_date": {"path": "./endpoint.py"}}
 
 
 print(test.custom_sys_command(test_focus_dict, "directory"))
 
 
-test_focus_dict = {"snmp_result":{"OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.9"}}
+test_focus_dict = {"snmp_int_result":{"OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.9"}}
 print(test.custom_sys_command(test_focus_dict, "metric"))
 
+test_focus_dict = {"snmp_string_result":{"OID": "1.3.6.1.4.1.2021.10.1.3.1"}}
+print(test.custom_sys_command(test_focus_dict, "metric"))
 

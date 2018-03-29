@@ -1,0 +1,37 @@
+{
+"aggs"{
+	"ReliantOnLowerAggs":[
+			"System"{
+				"status":{
+
+					"not_found":{},
+					"healthy":{},
+					"warning":{},
+					"critical":{}
+					}
+
+				}
+			],
+
+	"LowerLevelAggs":[
+           "CPUs": {
+		   "status":{
+		      "not_found":{},
+                      "healthy":{},
+		      "warning":{},
+		      "critical":{}
+		   },
+                   "thresholds":{}
+
+                },
+           "MEMs": {
+		   "status":{
+
+		   },
+		   "thresholds":{}
+                }
+	      ]
+	
+    }
+
+}
