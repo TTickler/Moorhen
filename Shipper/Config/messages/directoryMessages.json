@@ -4,18 +4,33 @@
       "monitor_type": "directory",
       "path": "",
       "endpoints": ["logstash-1", "test"],
-      "focus": {
-	   "file_size":{
-		"file": "c_parser.py"
-         	   },
-	   "age":{
-		"file": "c_parser.py"
-		},
-	   "file_list":
-		{"path": ""}
+      "focus":[
+		{
+
+		 "name": "audit-log-size",
+		 "command": "file_size",
+		 "mappings":{
+			   "path": "/var/log/audit.log"
+			   }
+	       },
 
 
-	     }    
+                {
+
+                 "name": "shipper-log-size",
+                 "command": "file_size",
+                 "mappings":{
+                           "path": "/var/log/shipper.log"
+                           }
+               },
+
+
+		{}
+
+	    ] 
+
+
+	        
    }
   ]
 }
