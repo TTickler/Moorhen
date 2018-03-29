@@ -1,5 +1,5 @@
 import c_parser
-import os
+import os, shlex, subprocess
 import ConfigParser
 
 #subprocess module is used here in place of sys to avoid overhead and be more pythonic 
@@ -33,31 +33,44 @@ class Monitor(object):
 	
 	monitor_mapping_cfg = ConfigParser.ConfigParser()
 	monitor_mapping_cfg.read(os.getcwd() + "/Config/monitorMappings.ini")
+
+	'''Uses Python's ConfigParser to parse mapping.
+		Ex. If 'snmp_result was passed in for type metric the 
+		unparsed_cmd would result in the string mapped to 
+		'snmp_result under the metric category in monitorMappings.ini' ' '''
+
+	for focus in focus_dict:
+	    focus = focus
 	
 	try:
 	    unparsed_cmd = monitor_mapping_cfg.get(monitor_type, focus)
 
 	except:
-	    print("Focus mapping issue with: " + focus + " in: " +  monitor_type + " type message.")
-	    cmd_results = "FAILED PARSING FOCUS"
+	    print("Focus mapping issue with: " + "tsts" + " in: " +  monitor_type + " type message.")
+	    return "FAILED PARSING FOCUS"
 
 	cmd_results = ""
 
 	for focus in focus_dict:
-	    for mapping in focus_dict[focus]
-		if mapping in monitor_mapping.cfg.sections():
-		    	
-	    
+	    for mapping in focus_dict[focus]:
+		
+		#unparsed strings in monitorMappings.ini are {STRING} format
+		match_string = "{" + mapping  + "}"
+		
+		if match_string in unparsed_cmd:
+		    parsed_cmd = unparsed_cmd.replace(match_string, focus_dict[focus][mapping])
 
-	return {"": cmd_results}
+		else:
+		    continue	
+	cmd_results = self.sys_command(parsed_cmd)
+
+	return {focus: cmd_results}
 
     def sys_command(self, command):
         
-	try:
-            command_result = subprocess.check_output([command])
-
-	except:
-	    print("Invalid System Command...")
+#	args = shlex.split(command)
+        print(repr(command))
+        command_result = subprocess.check_output(command, shell=True)
 	return command_result  
 
     def exec_local(self, focus_string):
@@ -131,9 +144,14 @@ class ProcessMonitor(Monitor):
 
 
 
-test = ProcessMonitor()
+test = Monitor()
+test_focus_dict = {"file_size": {"file": "./endpoint.py"}}
 
-print(test.sys_command("ls"))
-test.exec_local("get_cpu_used")
-test.exec_local("get_mem_used")
-#print(test.get_pid_by_name("java"))
+
+print(test.custom_sys_command(test_focus_dict, "directory"))
+
+
+test_focus_dict = {"snmp_result":{"OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.9"}}
+print(test.custom_sys_command(test_focus_dict, "metric"))
+
+
