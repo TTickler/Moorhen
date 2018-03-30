@@ -82,65 +82,10 @@ class Monitor(object):
 	   print(focus_string +  " is not a valid focus...") 
 	
 
-'''Child class of Monitor. Focuses on handling monitoring a directory'''
-class DirectoryMonitor(Monitor):
+
+Class Aggregator(object):
     def __init__(self):
-        Monitor.__init__(self)
-
-
-	'''Mappings for function calls. This allows shipper's main to '''
-        self._mappings = { 
-
-
-
-
-                        }
-
-    #def get_largest_file(self): 
-
-
-'''Child class of Monitor. Focuses on handling monitoring metrics'''
-class MetricMonitor(Monitor):
-    def __init__(self):
-        Monitor.__init__(self)
-
-        self._mappings = { 
-			   "get_snmp_results": self.get_snmp_results
-
-                        }
-
-
-    def get_snmp_results(self):
-	print("THIS IS GET_SNMP_RESULTS()")
-
-
-
-'''Child class of Monitor. Focuses on handling monitoring a process'''
-class ProcessMonitor(Monitor):
-    def __init__(self):
-        Monitor.__init__(self)
-	
-	self._mappings = { 
-			   "get_mem_used": self.get_mem_used,
-			   "get_cpu_used": self.get_cpu_used,
-			   "get_pid_by_name": self.get_pid_by_name
-			}
-
-    def get_pid_by_name(self, proc_name):
-	
-	PID = ''
-	try:
-            PID = subprocess.check_output(["pidof " + proc_name])
-	except:
-	    print("Invalid process name. Failed to retreive process ID.")
-
-	return PID
-
-    def get_mem_used(self):
-	print("THIS IS GET_MEM_USED()")
-
-    def get_cpu_used(self):
-	print("THIS IS GET_CPU_USED()")
+	self.test = 5
 
 
 
