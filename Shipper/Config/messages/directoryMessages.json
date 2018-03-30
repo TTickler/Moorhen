@@ -2,7 +2,6 @@
 "messages":[
    {	
       "monitor_type": "directory",
-      "path": "",
       "endpoints": ["logstash-1", "test"],
       "focus":[
 		{
