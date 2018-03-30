@@ -3,11 +3,46 @@
    {
       "monitor_type": "Metrics",
       "endpoints": ["logstash-1", "test-1"],
-      "focus":[]
-		
+      "focus":[
 
+
+	    ],
+      "aggs"{
+        "ReliantOnLowerAggs":[
+                        "System"{
+                                "status":{
+
+                                        "not_found":{},
+                                        "healthy":{},
+                                        "warning":{},
+                                        "critical":{}
+                                        }
+
+                                }
+                        ],
+
+        "LowerLevelAggs":[
+           "CPUs": {
+                   "status":{
+                      "not_found":{},
+                      "healthy":{},
+                      "warning":{},
+                      "critical":{}
+                   },
+                   "thresholds":{}
+
+                },
+           "MEMs": {
+                   "status":{
+
+                   },
+                   "thresholds":{}
+                }
+              ]
+
+         }
 		
    }
  
-   ]
+  ]
 }
