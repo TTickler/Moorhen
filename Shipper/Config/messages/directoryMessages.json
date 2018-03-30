@@ -23,11 +23,62 @@
                            }
                },
 
+	    ], 
+      "aggs":{
+        "ReliantOnLowerAggs":[
+                       "System"{
+                                "status":{
 
-		{}
+                                        "not_found":{
+						   "CPUs": 1,
+						   "MEMs": 1
+						},
+                                        "healthy":{
+                                                   "CPUs": 2,
+                                                   "MEMs": 4
+                                                },
 
-	    ] 
+                                        "warning":{
+                                                   "CPUs": 3,
+                                                   "MEMs": 3
+                                                },
 
+                                        "critical":{
+                                                   "CPUs": 4,
+                                                   "MEMs": 2
+                                                },
+
+                                        }
+
+                                }
+                        ],
+
+        "LowerLevelAggs":[
+           "CPUs": {
+                   "status":{
+                      "not_found":{},
+                      "healthy":{},
+                      "warning":{},
+                      "critical":{}
+                   },
+                   "thresholds":{}
+
+                },
+           "MEMs": {
+                   "status":{
+
+                   },
+                   "thresholds":{}
+                }
+              ]
+
+    }
+
+
+
+
+
+	}
 
 	        
    }

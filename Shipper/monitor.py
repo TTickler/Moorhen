@@ -83,7 +83,7 @@ class Monitor(object):
 	
 
 
-Class Aggregator(object):
+class Aggregator(object):
     def __init__(self):
 	self.test = 5
 
