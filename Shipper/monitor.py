@@ -46,7 +46,7 @@ class Monitor(object):
 	    unparsed_cmd = monitor_mapping_cfg.get(monitor_type, focus)
 
 	except:
-	    print("Focus mapping issue with: " + "tsts" + " in: " +  monitor_type + " type message.")
+	    print("Focus mapping issue with: " + focus + " in: " +  monitor_type + " type message.")
 	    return "FAILED PARSING FOCUS"
 
 	cmd_results = ""
@@ -81,12 +81,23 @@ class Monitor(object):
 	except:
 	   print(focus_string +  " is not a valid focus...") 
 	
+    def results(self, message_object):
+
+	results = {}
+
+	return results
+
 
 
 class Aggregator(object):
     def __init__(self):
 	self.test = 5
 
+    def results(message_object, monitored_results):
+	
+	agg_results = {}
+
+	return agg_results
 
 
 test = Monitor()

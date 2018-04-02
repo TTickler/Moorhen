@@ -1,7 +1,7 @@
 {
 "messages":[
    {	
-      "monitor_type": "directory",
+      "monitor_name": "directory",
       "endpoints": ["logstash-1", "test"],
       "focus":[
 		{
@@ -23,10 +23,31 @@
                            }
                },
 
+		{
+				
+		 "name": "cpu.1.status",
+		 "command": "snmp_int_result",
+		 "mappings":{
+			   "OID": "1.3.6.1.4.1.232.1.2.2.1.1.6.0"
+			   }
+
+		},
+
+                {
+
+                 "name": "cpu.2.status",
+                 "command": "snmp_int_result",
+                 "mappings":{
+                           "OID": "1.3.6.1.4.1.232.1.2.2.1.1.6.1"
+                           }
+
+                }
+
+
 	    ], 
       "aggs":{
-        "ReliantOnLowerAggs":[
-                       "System"{
+        "ReliantOnLowerAggs":{
+                       "System":{
                                 "status":{
 
                                         "not_found":{
@@ -46,20 +67,35 @@
                                         "critical":{
                                                    "CPUs": 4,
                                                    "MEMs": 2
-                                                },
+                                                }
 
                                         }
 
                                 }
-                        ],
+                        },
 
-        "LowerLevelAggs":[
+        "LowerLevelAggs":{
            "CPUs": {
                    "status":{
-                      "not_found":{},
-                      "healthy":{},
-                      "warning":{},
-                      "critical":{}
+                      "not_found":{
+				"cpu.1.status": 1,
+				"cpu.2.status": 1
+				},
+                      "healthy":{
+                                "cpu.1.status": 2,
+                                "cpu.2.status": 2
+                                },
+
+                      "warning":{
+                                "cpu.1.status": 3,
+                                "cpu.2.status": 3
+                                },
+
+                      "critical":{
+                                "cpu.1.status": 4,
+                                "cpu.2.status": 4
+                                }
+
                    },
                    "thresholds":{}
 
@@ -70,7 +106,7 @@
                    },
                    "thresholds":{}
                 }
-              ]
+              }
 
     }
 
@@ -81,6 +117,6 @@
 	}
 
 	        
-   }
+   
   ]
 }

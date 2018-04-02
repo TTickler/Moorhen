@@ -94,7 +94,7 @@ class messagesParser(cParser):
     @property
     def messages(self):
 	
-	messages = {"process":[], "directory":[], "metrics":[]}
+	messages = []
 	filenames = self.get_filenames()
 
         #counter for creating unique message objects. Acts as an id. 
@@ -114,7 +114,7 @@ class messagesParser(cParser):
 		if self.is_valid_schema(message_json):
 		    #self.iniialized_message() returns a fully initialized Message object with unique counter ID 
 		    temp_message = self.initialized_message(id_counter, message_json)
-		    messages[temp_message.monitor_type].append(temp_message)
+		    messages.append(temp_message)
 		    id_counter += 1
 		else:
 		    continue
@@ -128,15 +128,15 @@ class messagesParser(cParser):
 	#instantiates Message object
 	initialized_msg_object = message.Message(id_counter)
 	initialized_msg_object.endpoints = self.get_endpoints(message_json)
-	initialized_msg_object.monitor_type = self.get_monitor_type(message_json)
+	initialized_msg_object.monitor_name = self.get_monitor_name(message_json)
 
 	return initialized_msg_object
 
     def get_endpoints(self, message):
 	return message["endpoints"]
 
-    def get_monitor_type(self, message):
-	return message["monitor_type"]
+    def get_monitor_name(self, message):
+	return message["monitor_name"]
 
     def get_focus(self, message):
 	return message["focus"]
@@ -150,24 +150,12 @@ class messagesParser(cParser):
 		message type. Root level fields can be stored in a simple list while 
 		nested fields are currently stored in a dictionary as this allows mutability
 		for future functionality additions without much change'''
-	dir_message_fields = ["monitor_type", "path", "focus", "endpoints"]
-	dir_message_nested_fields = {}
+	message_fields = ["monitor_name", "focus", "endpoints", "aggs"]
 
-	proc_message_fields = ["monitor_type", "target","focus", "endpoints"]
-	proc_message_nested_fields = {"target": ["PID"]}
 
-	metric_message_fields = ["monitor_type", "endpoints", "OIDs"]
-	metric_message_nested_fields = {"OIDS": ["nested", "non_nested"]}
-
-	if "monitor_type" in message_json:
-            if self.get_monitor_type(message_json)  == "directory":
-	        validity = self.fields_exist(message_json, dir_message_fields, dir_message_nested_fields)
-		
-	    elif self.get_monitor_type(message_json) == "process":
-       	        validity = self.fields_exist(message_json, proc_message_fields, proc_message_nested_fields)
-
-	    else:
-		validity = self.fields_exist(message_json, metric_message_fields, metric_message_nested_fields)
+	print(message_json)
+	if "monitor_name" in message_json:
+	    validity = self.fields_exist(message_json, message_fields)
 
 	    if validity == True:
                 return True
@@ -188,16 +176,6 @@ class messagesParser(cParser):
 		
 	    else:
 	        continue 
-		
-	#checks if all expected nested metrics exist 
-	#returns False if ANY expected_nested_field is not found in JSON object
-	for expected_field in expected_msg_nested_fields:
-	    for expected_nested_field in message_json[expected_field]:
-	        if expected_nested_field not in message_json[expected_field]:
-		    return False
-		
-		else:
-		    continue 
 	
 	return True
 

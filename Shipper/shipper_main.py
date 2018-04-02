@@ -30,9 +30,10 @@ if __name__ == '__main__':
     config_parser = ship_main.config_parser_init()
 
     msg_parser = c_parser.messagesParser()
-    dir_monitor = monitor.DirectoryMonitor()
-    proc_monitor = monitor.ProcessMonitor()
-    metric_monitor = monitor.MetricMonitor()
+
+    #moniter module interface instantiations for aggregation and monitor handling
+    monitor = monitor.Monitor()
+    aggregator = monitor.Aggregator()
     
     message_objects_dict = msg_parser.messages
     print(message_objects_dict) 
@@ -64,23 +65,12 @@ if __name__ == '__main__':
     while True:
 	for message_type in message_objects_dict:
 	    for message_object in message_objects_dict[message_type]:
-	        if message_object.monitor_type == "directory":
-		    try:
-		        handled_results = dir_monitor.results(message_object)
-		    except:
-		        print("Directory handler instantiation failed...")
+	        try:
+		    handled_results = monitor.results(message_object)
+		    aggregated_results = aggregator.results(message_object, handled_results)
 
-	        elif message_object.monitor_type == "process":
-                    try:
-                        handled_results = proc_monitor.results(message_object)
-                    except:
-                        print("Process handler instantiation failed...")
-
-	        else:
-                    try:
-                        handled_results = metric_monitor.results(message_object)
-                    except:
-                        print("Directory handler instantiation failed...")
+		except:
+		    print("Monitor instantiation failed...")
 
 	        for endpoint in message_object.endpoints:
 		    try:

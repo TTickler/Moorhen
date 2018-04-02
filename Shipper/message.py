@@ -4,6 +4,7 @@ import json
 class Message(object):
 	def __init__(self, number):
 
+		self._aggregations = {}
 		self._number = number
 		self._endpoints = []
 		self._timestamp = ''
@@ -59,3 +60,11 @@ class Message(object):
 	def monitor_type(self, monitor_type):
 		self._monitor_type = monitor_type
 
+	@property
+	def aggregations(self):
+		return self._aggregations
+
+
+	@aggregations.setter
+	def aggregations(self, aggregations):
+		self._aggregations = aggregations
