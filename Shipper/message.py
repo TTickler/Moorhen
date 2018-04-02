@@ -34,15 +34,7 @@ class Message(object):
 
 	@endpoints.setter
 	def endpoints(self, endpoints):
-		self._endpoints = endpoints
-
-	@property
-	def payload(self):
-		return self._payload
-
-	@payload.setter
-	def payload(self, payload):
-		self._payload = payload 
+		self._endpoints = endpoints 
 
 	@property
 	def tags(self):
@@ -68,3 +60,22 @@ class Message(object):
 	@aggregations.setter
 	def aggregations(self, aggregations):
 		self._aggregations = aggregations
+
+
+
+class MonitoredMessage(Message):
+	def __init__(self):
+		Message.__init__(self)
+
+	@property
+	def payload(self):
+		return self._payload
+
+	@payload.setter
+	def payload(self, payload):
+		self._payload = payload
+
+class UnmonitoredMessage(Message):
+	def __init__(self):
+		Message.__init__(self)
+

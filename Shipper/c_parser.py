@@ -166,7 +166,7 @@ class messagesParser(cParser):
 	else:
             return False
 
-    def fields_exist(self, message_json, expected_msg_fields, expected_msg_nested_fields):
+    def fields_exist(self, message_json, expected_msg_fields):
 	
 	#checks if all expected fields are found in root of JSON object
 	#returns false if ANY expected_field is not found in JSON object
@@ -199,13 +199,12 @@ test = messagesParser()
 #print(test.messages)
 objArray = test.messages
 print("\nObject Array: " + str(objArray))
-for mon_type in objArray:
-    for obj in objArray[mon_type]:
-	print("\nObject: " + str(obj))
-	print("Object ID/Message Number: " + str(obj._number))
-        print("Monitor Type: " + obj.monitor_type)
-        print("Endpoints: " + str(obj.endpoints))
-	print("\n")
+for obj in objArray:
+    print("\nObject: " + str(obj))
+    print("Object ID/Message Number: " + str(obj._number))
+    print("Monitor Name: " + obj.monitor_name)
+    print("Endpoints: " + str(obj.endpoints))
+    print("\n")
 
 
 
