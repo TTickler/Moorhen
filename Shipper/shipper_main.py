@@ -62,6 +62,11 @@ if __name__ == '__main__':
 
     i = 0
 
+'''AFTER MESSAGE IS SET UP CAST IT BACK TO CHILD CLASS OF MONITOREDMESSAGE
+
+SEE: https://stackoverflow.com/questions/3464061/cast-base-class-to-derived-class-python-or-more-pythonic-way-of-extending-class'''
+
+
     while True:
 	for message_type in message_objects_dict:
 	    for message_object in message_objects_dict[message_type]:

@@ -88,16 +88,90 @@ class Monitor(object):
 	return results
 
 
-
+'''Interface for handling aggregation of lower and higher level aggregations
+	configured for each message'''
 class Aggregator(object):
     def __init__(self):
 	self.test = 5
 
-    def results(message_object, monitored_results):
+    def results(monitored_message_object):
 	
 	agg_results = {}
+	
+	msg_high_aggs = monitored_message_object.high_level_aggs
+	msg_low_aggs = monitored_message_object.low_level_aggs
+
+
+
 
 	return agg_results
+
+    '''Gets the results of the lower level aggregations for use by possible 
+	higher level aggregations.'''
+    def get_lower_level_results(self, monitor_results, message_aggs):
+	
+        totalCount = {"1": 0, "2":0, "3":0, "4":0}
+	lower_level_results = {}
+
+
+	for result in monitor_results:
+	    for low_agg in message_aggs:
+		for monitored_metric in message_aggs[low_agg]:
+		   if monitored_metric == result:
+	
+	return lower_level_results
+
+
+    def get_compare_type(self, thresh_element):
+
+       if thresh_element["healthy"] > thresh_element["warning"] and thresh_element["warning"] > thresh_element["critical"]:
+           return 'decreasing'
+       else:
+           return 'increasing'
+
+    def status_checker(self, total_count, status_element_name, status_element_value, status_mapped_health):
+
+        if status_element_value == status_mapped_health['healthy'][status_element_name]:
+            total_count["2"] += 1
+        elif status_element_value  == status_mapped_health['warning'][status_element_name]:
+            total_count["3"] += 1
+        elif status_element_value == status_mapped_health['failure'][status_element_name]:
+            total_count["4"] += 1
+        else:
+            total_count["1"] += 1
+
+        return total_count
+
+    def threshold_check(self, compare_type, total_count, thresh_element, thresh_mapped_health):
+       
+	if compare_type == 'decreasing':
+           if thresh_element > thresh_mapped_health['healthy']:
+               total_count["2"] += 1
+           elif (thresh_element  < thresh_mapped_health['healthy']) and (thresh_element > thresh_mapped_health['critical']):
+               total_count["3"] += 1
+
+           else:
+               total_count["4"] += 1
+
+       else:
+           if thresh_element > thresh_mapped_health['critical']:
+               total_count["4"] += 1
+           elif (thresh_element > thresh_mapped_health['healthy']) and (thresh_element < thresh_mapped_health['critical']):
+               total_count["3"] += 1
+
+           else:
+               total_count["2"] += 1
+
+        return total_count
+
+
+
+
+
+    def get_status_result(self,
+
+    def get_higher_level_results(self, lower_level_results, message_aggs):
+	return higher_level_results
 
 
 test = Monitor()

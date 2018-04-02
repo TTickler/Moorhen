@@ -7,7 +7,6 @@ class Message(object):
 		self._aggregations = {}
 		self._number = number
 		self._endpoints = []
-		self._timestamp = ''
 		self._payload = {}
 		self._tags = []
 		self._monitor_type = ''
@@ -19,14 +18,6 @@ class Message(object):
 		self.timestamp = timestamp
 		self.endpoints = endpoints
 		self.payload = json.dumps(payload) 
-
-	@property 
-	def timestamp(self):
-		return self._timestamp
-
-	@timestamp.setter
-	def timestamp(self, time):
-		self._timestamp = time
 
 	@property
 	def endpoints(self):
@@ -66,6 +57,9 @@ class Message(object):
 class MonitoredMessage(Message):
 	def __init__(self):
 		Message.__init__(self)
+		
+		self._timestamp = ''
+		self._payload = {}
 
 	@property
 	def payload(self):
@@ -74,6 +68,15 @@ class MonitoredMessage(Message):
 	@payload.setter
 	def payload(self, payload):
 		self._payload = payload
+
+        @property
+        def timestamp(self):
+                return self._timestamp
+
+        @timestamp.setter
+        def timestamp(self, time):
+                self._timestamp = time
+
 
 class UnmonitoredMessage(Message):
 	def __init__(self):

@@ -1,7 +1,7 @@
 {
 "messages":[
    {	
-      "monitor_name": "directory",
+      "monitor_name": "testMonitor",
       "endpoints": ["logstash-1", "test"],
       "focus":[
 		{

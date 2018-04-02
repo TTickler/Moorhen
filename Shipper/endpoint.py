@@ -155,6 +155,9 @@ class Endpoint(threading.Thread):
 	
 	def send(self, message):
 		
+
+		'''SEND THE MESSAGE OBJECT'S PAYLOAD. NOT THE MESSAGE ITSELF'''
+	
 		try:
 			print("CHANGE THIS!!!!!")
 
