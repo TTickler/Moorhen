@@ -94,30 +94,42 @@ class Aggregator(object):
     def __init__(self):
 	self.test = 5
 
-    def results(monitored_message_object):
+    @property
+    def results(monitored_message):
 	
 	agg_results = {}
-	
-	msg_high_aggs = monitored_message_object.high_level_aggs
-	msg_low_aggs = monitored_message_object.low_level_aggs
 
+	msg_low_agg_results = self.get_lower_level_results(monitored_message.monitored_payload, monitored_message.low_level_aggs)
+	msg_high_agg_results = self.get_high_level_results(msg_low_agg_results, monitored_message.high_level_aggs)
 
-
+	agg_results.update(msg_low_agg_results)
+	agg_results.update(msg_high_agg_results)
 
 	return agg_results
 
     '''Gets the results of the lower level aggregations for use by possible 
 	higher level aggregations.'''
-    def get_lower_level_results(self, monitor_results, message_aggs):
+    def get_lower_level_results(self, monitor_results, message_lower_aggs):
 	
-        totalCount = {"1": 0, "2":0, "3":0, "4":0}
+        total_count = {"1": 0, "2":0, "3":0, "4":0}
 	lower_level_results = {}
 
 
-	for result in monitor_results:
-	    for low_agg in message_aggs:
-		for monitored_metric in message_aggs[low_agg]:
-		   if monitored_metric == result:
+	'''STATUS'''
+	for monitor_result in monitor_results["status"]:
+	    for low_agg in message_lower_aggs["status"]:
+		for monitored_metric in message_lower_aggs["status"][low_agg]:
+		    if monitored_metric == monitor_result:
+		        total_count = self.status_check(total_count, monitored_metric, monitor_results["status"][monitor_result], message_lower_aggs["status"])	
+			
+	'''THRESHOLD'''
+	for monitor_result in monitor_results["threshold"]:
+	    for low_agg in message_lower_aggs["threshold"]:
+		for monitored_metric in message_lower_aggs["threshold"][low_agg]:
+		    if monitored_metric == monitor_result:
+		        total_count = self.threshold_check(self.get_compare_type(), total_count, , message_lower_aggs["threshold"])
+
+			#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
 	
 	return lower_level_results
 
@@ -129,7 +141,7 @@ class Aggregator(object):
        else:
            return 'increasing'
 
-    def status_checker(self, total_count, status_element_name, status_element_value, status_mapped_health):
+    def status_check(self, total_count, status_element_name, status_element_value, status_mapped_health):
 
         if status_element_value == status_mapped_health['healthy'][status_element_name]:
             total_count["2"] += 1
