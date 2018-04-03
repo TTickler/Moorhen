@@ -36,20 +36,17 @@ if __name__ == '__main__':
     aggregator = monitor.Aggregator()
     
     message_objects_dict = msg_parser.messages
-    print(message_objects_dict) 
     #grabs list of all valid messages in regards to set schema
     endpoints = []
     for message_type in message_objects_dict:
 	for message_object in message_objects_dict:
-	    print(message_object.focus)
+	   # print(message_object.focus)
 	    for endP in message_object.endpoints:
                 if endP in endpoints:
 	            continue
 	        else:
 	            endpoints.append(endP)
 
-    
-    print(config_parser.sections())
     endpoint_threads = []
     for section in config_parser.sections():
 	#try:
@@ -67,10 +64,15 @@ if __name__ == '__main__':
     while True:
         for message_type in message_objects_dict:
 	    for message_object in message_objects_dict:
-		print(message_object.low_level_aggs)
-		print(message_object.high_level_aggs)
+		#print(message_object.low_level_aggs)
+		#print(message_object.high_level_aggs)
 	        
-		handled_results = monitor_interface.results(message_object)
+		#casting message_object to child interface of monitoredMessage
+
+		message_object.__class__ = message.MonitoredMessage
+		message_object.monitored_payload  = monitor_interface.results(message_object)
+
+	
 		aggregated_results = aggregator.results(message_object)
 		print(aggregated_results)
 		

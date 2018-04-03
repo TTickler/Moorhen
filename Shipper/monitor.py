@@ -21,7 +21,7 @@ class Monitor(object):
 
 
 	focus_dict is the focus and its nested fields/values.'''
-    def custom_sys_command(self, focus_dict):
+    def custom_sys_command(self, focus , focus_type):
 	
 	monitor_mapping_cfg = ConfigParser.ConfigParser()
 	monitor_mapping_cfg.read(os.getcwd() + "/Config/monitorMappings.ini")
@@ -30,39 +30,38 @@ class Monitor(object):
 		Ex. If 'snmp_result was passed in for type metric the 
 		unparsed_cmd would result in the string mapped to 
 		'snmp_result under the metric category in monitorMappings.ini' ' '''
-
-	for focus in focus_dict:
-	    focus = focus
+	
+	focus_command = focus["command"]
+	focus_name = focus["name"]
 	
 	try:
-	    unparsed_cmd = monitor_mapping_cfg.get("commands", focus)
+	    unparsed_cmd = monitor_mapping_cfg.get("commands", focus_command)
 
 	except:
-	    print("Focus mapping issue with: " + focus + " in: " +  monitor_type + " type message.")
+	    print("Focus mapping issue with: " + focus_command + " in: commands")
 	    return "FAILED PARSING FOCUS"
 
 	cmd_results = ""
-
-	for focus in focus_dict:
-	    for mapping in focus_dict[focus]:
+	
+	for mapping in focus["mappings"]:
+	    	
+	    #unparsed strings in monitorMappings.ini are {STRING} format
+	    match_string = "{" + mapping  + "}"
 		
-		#unparsed strings in monitorMappings.ini are {STRING} format
-		match_string = "{" + mapping  + "}"
-		
-		if match_string in unparsed_cmd:
-		    parsed_cmd = unparsed_cmd.replace(match_string, focus_dict[focus][mapping])
+	    if match_string in unparsed_cmd:
+                parsed_cmd = unparsed_cmd.replace(match_string, focus["mappings"][mapping])
 
-		else:
-		    continue	
-	cmd_results = self.sys_command(parsed_cmd)
-
-	return {focus: cmd_results}
+	    else:
+                continue	
+	    cmd_results = self.sys_command(parsed_cmd)
+	print(repr(cmd_results))
+	return {focus_name: cmd_results}
 
     def sys_command(self, command):
         
 #	args = shlex.split(command)
-        print(repr(command))
-        command_result = subprocess.check_output(command, shell=True)
+	#gets output from system call with a shell. Strips away \n character
+        command_result = subprocess.check_output(command, shell=True).strip()
 	return command_result  
 
     def exec_local(self, focus_string):
@@ -75,9 +74,15 @@ class Monitor(object):
 	
     def results(self, message_object):
 
-	results = {}
-	print("NICE")
+	results = {"status": [], "threshold": []}
 
+	for focus in message_object.focus:
+
+	    if focus["type"] == "status":
+		results["status"].append(self.custom_sys_command(focus, "status")) 
+	    else:
+		results["threshold"].append(self.custom_sys_command(focus, "threshold"))
+	
 	return results
 
 
@@ -106,14 +111,21 @@ class Aggregator(object):
         total_count = {"1": 0, "2":0, "3":0, "4":0}
 	lower_level_results = {}
 
-
 	'''STATUS'''
 	for monitor_result in monitor_results["status"]:
-	    for low_agg in message_lower_aggs["status"]:
-		print("LOW AGG  " + low_agg)
-		for monitored_metric in message_lower_aggs["status"][low_agg]:
-		    if monitored_metric == monitor_result:
-		        total_count = self.status_check(total_count, monitored_metric, monitor_results["status"][monitor_result], message_lower_aggs["status"])	
+	    found = False
+	    for monitor_result_name in monitor_result:
+	        for low_agg in message_lower_aggs:
+		    for health in message_lower_aggs[low_agg]["status"]:
+		#	print health
+			if found == True:
+			    continue
+		        if monitor_result_name in message_lower_aggs[low_agg]["status"][health]:
+		            total_count = self.status_check(total_count, monitor_result_name, monitor_result[monitor_result_name], message_lower_aggs[low_agg]["status"])
+			    found = True
+		
+			else:
+			    continue
 			
 	'''THRESHOLD'''
 	for monitor_result in monitor_results["threshold"]:
@@ -136,11 +148,11 @@ class Aggregator(object):
 
     def status_check(self, total_count, status_element_name, status_element_value, status_mapped_health):
 
-        if status_element_value == status_mapped_health['healthy'][status_element_name]:
+	if str(status_element_value) == str(status_mapped_health["healthy"][status_element_name]):
             total_count["2"] += 1
-        elif status_element_value  == status_mapped_health['warning'][status_element_name]:
+        elif str(status_element_value)  == str(status_mapped_health['warning'][status_element_name]):
             total_count["3"] += 1
-        elif status_element_value == status_mapped_health['failure'][status_element_name]:
+        elif str(status_element_value) == str(status_mapped_health['critical'][status_element_name]):
             total_count["4"] += 1
         else:
             total_count["1"] += 1
@@ -178,17 +190,4 @@ class Aggregator(object):
     def get_higher_level_results(self, lower_level_results, message_aggs):
 	return higher_level_results
 
-
-test = Monitor()
-test_focus_dict = {"file_date": {"path": "./endpoint.py"}}
-
-
-print(test.custom_sys_command(test_focus_dict, "directory"))
-
-
-test_focus_dict = {"snmp_int_result":{"OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.9"}}
-print(test.custom_sys_command(test_focus_dict, "metric"))
-
-test_focus_dict = {"snmp_string_result":{"OID": "1.3.6.1.4.1.2021.10.1.3.1"}}
-print(test.custom_sys_command(test_focus_dict, "metric"))
 

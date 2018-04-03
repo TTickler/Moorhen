@@ -132,6 +132,7 @@ class messagesParser(cParser):
 	initialized_msg_object.high_level_aggs = self.get_high_level_aggs(message_json)
 	initialized_msg_object.low_level_aggs = self.get_low_level_aggs(message_json)	
 	initialized_msg_object.focus = self.get_focus(message_json)
+	#initialized_msg_object.monitor_type = self.get_monitor_type(message_json)
 
 	return initialized_msg_object
 
@@ -164,8 +165,6 @@ class messagesParser(cParser):
 		for future functionality additions without much change'''
 	message_fields = ["monitor_name", "focus", "endpoints", "aggs"]
 
-
-	print(message_json)
 	if "monitor_name" in message_json:
 	    validity = self.fields_exist(message_json, message_fields)
 
