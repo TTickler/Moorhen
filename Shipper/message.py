@@ -10,6 +10,8 @@ class Message(object):
 		self._payload = {}
 		self._tags = []
 		self._monitor_type = ''
+		self._high_level_aggs = {}
+		self._low_level_aggs = {}
 
 	'''Acts similar to __init__(), but provides a more readable point of 
 		"entry" to this interface. This way it's abundantly clear that 
@@ -52,6 +54,21 @@ class Message(object):
 	def aggregations(self, aggregations):
 		self._aggregations = aggregations
 
+	@property
+	def high_level_aggs(self):
+		return self._high_level_aggs
+
+	@high_level_aggs.setter
+	def high_level_aggs(self, high_level_aggs):
+		self._high_level_aggs = high_level_aggs
+
+	@property
+	def low_level_aggs(self):
+		return self._low_level_aggs
+
+	@low_leevel_aggs.setter
+	def low_level_aggs(self, low_level_aggs):
+		self._low_level_aggs = low_level_aggs
 
 
 class MonitoredMessage(Message):
@@ -68,6 +85,14 @@ class MonitoredMessage(Message):
 	@payload.setter
 	def payload(self, payload):
 		self._payload = payload
+
+	@property
+	def agg_results(self):
+		return self._agg_results
+
+	@agg_results.setter
+	def agg_results(self, agg_results):
+		self._agg_results = agg_results
 
         @property
         def timestamp(self):

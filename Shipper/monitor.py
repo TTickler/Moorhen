@@ -14,14 +14,6 @@ class Monitor(object):
 	#ex would be MetricMonitor having functionality for getting SNMP query results 
         self._mappings = {} 
 
-    @property 
-    def monitor_type(self):
-        return self._monitor_type
-
-    @monitor_type.setter
-    def monitor_type(self, monitor_type):
-        self._monitor_type = monitor_type
-
 
     '''Uses focus mappings specific to each message to attempt to 
 	make a valid system call, mapped in /Config/monitorMappings.ini, 
