@@ -68,13 +68,11 @@ if __name__ == '__main__':
 	    for message_object in message_objects_dict:
 		print(message_object.low_level_aggs)
 		print(message_object.high_level_aggs)
-	        try:
-		    handled_results = monitor.results(message_object)
-		    aggregated_results = aggregator.results(message_object, handled_results)
-
-		except:
-		    print("Monitor instantiation failed...")
-
+	        
+		handled_results = monitor_interface.results(message_object)
+		aggregated_results = aggregator.results(message_object)
+		print(aggregated_results)
+		
 	        for endpoint in message_object.endpoints:
 		    try:
 		        endpoint_threads.index(endpoint).fifo_queue.enqueue(handled_results)

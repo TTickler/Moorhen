@@ -76,6 +76,7 @@ class Monitor(object):
     def results(self, message_object):
 
 	results = {}
+	print("NICE")
 
 	return results
 
@@ -86,8 +87,7 @@ class Aggregator(object):
     def __init__(self):
 	self.test = 5
 
-    @property
-    def results(monitored_message):
+    def results(self, monitored_message):
 	
 	agg_results = {}
 
@@ -110,6 +110,7 @@ class Aggregator(object):
 	'''STATUS'''
 	for monitor_result in monitor_results["status"]:
 	    for low_agg in message_lower_aggs["status"]:
+		print("LOW AGG  " + low_agg)
 		for monitored_metric in message_lower_aggs["status"][low_agg]:
 		    if monitored_metric == monitor_result:
 		        total_count = self.status_check(total_count, monitored_metric, monitor_results["status"][monitor_result], message_lower_aggs["status"])	

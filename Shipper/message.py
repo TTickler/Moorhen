@@ -77,6 +77,7 @@ class MonitoredMessage(Message):
 		
 		self._timestamp = ''
 		self._payload = {}
+		self._monitored_payload = {}
 
 	@property
 	def payload(self):
@@ -101,7 +102,13 @@ class MonitoredMessage(Message):
         @timestamp.setter
         def timestamp(self, time):
                 self._timestamp = time
+	@property
+	def monitored_payload(self):
+		return self._monitored_payload
 
+	@monitored_payload.setter
+	def monitored_payload(self, monitored_payload):
+		self._monitored_payload = monitored_payload
 
 class UnmonitoredMessage(Message):
 	def __init__(self):
