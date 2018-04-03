@@ -131,9 +131,12 @@ class messagesParser(cParser):
 	initialized_msg_object.monitor_name = self.get_monitor_name(message_json)
 	initialized_msg_object.high_level_aggs = self.get_high_level_aggs(message_json)
 	initialized_msg_object.low_level_aggs = self.get_low_level_aggs(message_json)	
-
+	initialized_msg_object.focus = self.get_focus(message_json)
 
 	return initialized_msg_object
+
+    def get_focus(self, message):
+	return message["focus"]
 
     def get_high_level_aggs(self, message):
 	return message["aggs"]["HighLevelAggs"]

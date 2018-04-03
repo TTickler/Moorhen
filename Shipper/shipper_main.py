@@ -41,6 +41,7 @@ if __name__ == '__main__':
     endpoints = []
     for message_type in message_objects_dict:
 	for message_object in message_objects_dict:
+	    print(message_object.focus)
 	    for endP in message_object.endpoints:
                 if endP in endpoints:
 	            continue

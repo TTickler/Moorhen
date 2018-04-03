@@ -12,6 +12,8 @@ class Message(object):
 		self._monitor_type = ''
 		self._high_level_aggs = {}
 		self._low_level_aggs = {}
+		self._focus = []
+
 
 	'''Acts similar to __init__(), but provides a more readable point of 
 		"entry" to this interface. This way it's abundantly clear that 
@@ -20,6 +22,14 @@ class Message(object):
 		self.timestamp = timestamp
 		self.endpoints = endpoints
 		self.payload = json.dumps(payload) 
+
+	@property 
+	def focus(self):
+		return self._focus
+
+	@focus.setter
+	def focus(self, focus):
+		self._focus = focus
 
 	@property
 	def endpoints(self):

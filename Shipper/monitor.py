@@ -21,7 +21,7 @@ class Monitor(object):
 
 
 	focus_dict is the focus and its nested fields/values.'''
-    def custom_sys_command(self, focus_dict, monitor_type):
+    def custom_sys_command(self, focus_dict):
 	
 	monitor_mapping_cfg = ConfigParser.ConfigParser()
 	monitor_mapping_cfg.read(os.getcwd() + "/Config/monitorMappings.ini")
@@ -35,7 +35,7 @@ class Monitor(object):
 	    focus = focus
 	
 	try:
-	    unparsed_cmd = monitor_mapping_cfg.get(monitor_type, focus)
+	    unparsed_cmd = monitor_mapping_cfg.get("commands", focus)
 
 	except:
 	    print("Focus mapping issue with: " + focus + " in: " +  monitor_type + " type message.")
