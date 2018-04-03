@@ -66,7 +66,7 @@ class Message(object):
 	def low_level_aggs(self):
 		return self._low_level_aggs
 
-	@low_leevel_aggs.setter
+	@low_level_aggs.setter
 	def low_level_aggs(self, low_level_aggs):
 		self._low_level_aggs = low_level_aggs
 

@@ -32,7 +32,7 @@ if __name__ == '__main__':
     msg_parser = c_parser.messagesParser()
 
     #moniter module interface instantiations for aggregation and monitor handling
-    monitor = monitor.Monitor()
+    monitor_interface = monitor.Monitor()
     aggregator = monitor.Aggregator()
     
     message_objects_dict = msg_parser.messages
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     #grabs list of all valid messages in regards to set schema
     endpoints = []
     for message_type in message_objects_dict:
-	for message_object in message_objects_dict[message_type]:
+	for message_object in message_objects_dict:
 	    for endP in message_object.endpoints:
                 if endP in endpoints:
 	            continue
@@ -62,14 +62,12 @@ if __name__ == '__main__':
 
     i = 0
 
-'''AFTER MESSAGE IS SET UP CAST IT BACK TO CHILD CLASS OF MONITOREDMESSAGE
-
-SEE: https://stackoverflow.com/questions/3464061/cast-base-class-to-derived-class-python-or-more-pythonic-way-of-extending-class'''
-
-
+#AFTER MESSAGE IS SET UP CAST IT BACK TO CHILD CLASS OF MONITOREDMESSAGE
     while True:
-	for message_type in message_objects_dict:
-	    for message_object in message_objects_dict[message_type]:
+        for message_type in message_objects_dict:
+	    for message_object in message_objects_dict:
+		print(message_object.low_level_aggs)
+		print(message_object.high_level_aggs)
 	        try:
 		    handled_results = monitor.results(message_object)
 		    aggregated_results = aggregator.results(message_object, handled_results)

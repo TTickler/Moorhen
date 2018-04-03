@@ -119,7 +119,7 @@ class Aggregator(object):
 	    for low_agg in message_lower_aggs["threshold"]:
 		for monitored_metric in message_lower_aggs["threshold"][low_agg]:
 		    if monitored_metric == monitor_result:
-		        total_count = self.threshold_check(self.get_compare_type(), total_count, , message_lower_aggs["threshold"])
+		        total_count = self.threshold_check(self.get_compare_type(), total_count, monitor_results["threshold"][monitor_result] , message_lower_aggs["threshold"])
 
 			#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
 	
@@ -149,22 +149,22 @@ class Aggregator(object):
     def threshold_check(self, compare_type, total_count, thresh_element, thresh_mapped_health):
        
 	if compare_type == 'decreasing':
-           if thresh_element > thresh_mapped_health['healthy']:
-               total_count["2"] += 1
-           elif (thresh_element  < thresh_mapped_health['healthy']) and (thresh_element > thresh_mapped_health['critical']):
-               total_count["3"] += 1
+            if thresh_element > thresh_mapped_health['healthy']:
+                total_count["2"] += 1
+            elif (thresh_element  < thresh_mapped_health['healthy']) and (thresh_element > thresh_mapped_health['critical']):
+                total_count["3"] += 1
 
-           else:
-               total_count["4"] += 1
+            else:
+                total_count["4"] += 1
 
-       else:
-           if thresh_element > thresh_mapped_health['critical']:
-               total_count["4"] += 1
-           elif (thresh_element > thresh_mapped_health['healthy']) and (thresh_element < thresh_mapped_health['critical']):
-               total_count["3"] += 1
+        else:
+            if thresh_element > thresh_mapped_health['critical']:
+                total_count["4"] += 1
+            elif (thresh_element > thresh_mapped_health['healthy']) and (thresh_element < thresh_mapped_health['critical']):
+                total_count["3"] += 1
 
-           else:
-               total_count["2"] += 1
+            else:
+                total_count["2"] += 1
 
         return total_count
 
@@ -172,7 +172,7 @@ class Aggregator(object):
 
 
 
-    def get_status_result(self,
+    #def get_status_result(self,
 
     def get_higher_level_results(self, lower_level_results, message_aggs):
 	return higher_level_results
