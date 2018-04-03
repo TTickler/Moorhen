@@ -129,8 +129,17 @@ class messagesParser(cParser):
 	initialized_msg_object = message.Message(id_counter)
 	initialized_msg_object.endpoints = self.get_endpoints(message_json)
 	initialized_msg_object.monitor_name = self.get_monitor_name(message_json)
+	initialized_msg_object.high_level_aggs = self.get_high_level_aggs(message_json)
+	initialized_msg_object.low_level_aggs = self.get_low_level_aggs(message_json)	
+
 
 	return initialized_msg_object
+
+    def get_high_level_aggs(self, message):
+	return message["aggs"]["HighLevelAggs"]
+
+    def get_low_level_aggs(self, message):
+	return message["aggs"]["LowLevelAggs"]
 
     def get_endpoints(self, message):
 	return message["endpoints"]

@@ -46,7 +46,7 @@
 
 	    ], 
       "aggs":{
-        "ReliantOnLowerAggs":{
+        "HighLevelAggs":{
                        "System":{
                                 "status":{
 
@@ -74,7 +74,7 @@
                                 }
                         },
 
-        "LowerLevelAggs":{
+        "LowLevelAggs":{
            "CPUs": {
                    "status":{
                       "not_found":{
