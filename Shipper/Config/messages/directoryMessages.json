@@ -45,6 +45,17 @@
                            "OID": "1.3.6.1.4.1.232.1.2.2.1.1.6.1"
                            }
 
+                },
+
+                {
+
+                 "name": "cpu.1.temperature",
+                 "type": "threshold",
+                 "command": "snmp_int_result",
+                 "mappings":{
+                           "OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.2"
+                           }
+
                 }
 
 
@@ -60,7 +71,7 @@
 						},
                                         "healthy":{
                                                    "CPUs": 2,
-                                                   "MEMs": 4
+                                                   "MEMs": 2
                                                 },
 
                                         "warning":{
@@ -70,7 +81,7 @@
 
                                         "critical":{
                                                    "CPUs": 4,
-                                                   "MEMs": 2
+                                                   "MEMs": 4
                                                 }
 
                                         }
@@ -101,14 +112,29 @@
                                 }
 
                    },
-                   "thresholds":{}
+                   "threshold":{
+				"cpu.1.temperature": {
+						    "healthy": 50,
+						    "warning": 60,
+						    "critical": 70
+						    }
+				
+				}
 
                 },
            "MEMs": {
                    "status":{
 
                    },
-                   "thresholds":{}
+                   "threshold":{
+			       "shipper-log-size": {
+                                                   "healthy": 100,
+                                                   "warning": 400,
+                                                   "critical": 50000
+
+						}
+			
+			}
                 }
               }
 

@@ -54,7 +54,7 @@ class Monitor(object):
 	    else:
                 continue	
 	    cmd_results = self.sys_command(parsed_cmd)
-	print(repr(cmd_results))
+	
 	return {focus_name: cmd_results}
 
     def sys_command(self, command):
@@ -97,11 +97,11 @@ class Aggregator(object):
 	agg_results = {}
 
 	msg_low_agg_results = self.get_lower_level_results(monitored_message.monitored_payload, monitored_message.low_level_aggs)
-	msg_high_agg_results = self.get_high_level_results(msg_low_agg_results, monitored_message.high_level_aggs)
+	msg_high_agg_results = self.get_higher_level_results(msg_low_agg_results, monitored_message.high_level_aggs)
 
 	agg_results.update(msg_low_agg_results)
 	agg_results.update(msg_high_agg_results)
-
+	#print(agg_results)
 	return agg_results
 
     '''Gets the results of the lower level aggregations for use by possible 
@@ -110,34 +110,69 @@ class Aggregator(object):
 	
         total_count = {"1": 0, "2":0, "3":0, "4":0}
 	lower_level_results = {}
+	lower_level_agg_count = {}
 
 	'''STATUS'''
 	for monitor_result in monitor_results["status"]:
 	    found = False
 	    for monitor_result_name in monitor_result:
+		 
+		#print("monitor_result: " + str(monitor_result) + " mon result name: " + monitor_result_name)
 	        for low_agg in message_lower_aggs:
+                    lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
+
 		    for health in message_lower_aggs[low_agg]["status"]:
 		#	print health
 			if found == True:
 			    continue
 		        if monitor_result_name in message_lower_aggs[low_agg]["status"][health]:
-		            total_count = self.status_check(total_count, monitor_result_name, monitor_result[monitor_result_name], message_lower_aggs[low_agg]["status"])
+		            lower_level_agg_count[low_agg] = self.status_check(lower_level_agg_count[low_agg], monitor_result_name, monitor_result[monitor_result_name], message_lower_aggs[low_agg]["status"])
 			    found = True
-		
+
 			else:
 			    continue
 			
 	'''THRESHOLD'''
-	for monitor_result in monitor_results["threshold"]:
-	    for low_agg in message_lower_aggs["threshold"]:
-		for monitored_metric in message_lower_aggs["threshold"][low_agg]:
-		    if monitored_metric == monitor_result:
-		        total_count = self.threshold_check(self.get_compare_type(), total_count, monitor_results["threshold"][monitor_result] , message_lower_aggs["threshold"])
-
-			#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
 	
+	#try:
+	for monitor_result in monitor_results["threshold"]:
+	    found = False
+	    print "monitor result: " + str(monitor_result)
+	    for monitor_result_name in monitor_result:
+	        for low_agg in message_lower_aggs:
+		    print("1")
+	            for metric in message_lower_aggs[low_agg]["threshold"]:
+			if found == True:
+			    continue
+
+	                if metric in monitor_result:
+			    print("METRIC: " + str(message_lower_aggs[low_agg]["threshold"]))
+		            found = True
+                            print("metric" + str(monitor_result))
+	                    lower_level_agg_count[low_agg] = self.threshold_check(self.get_compare_type(message_lower_aggs[low_agg]["threshold"][metric]), lower_level_agg_count[low_agg], monitor_result[monitor_result_name], message_lower_aggs[low_agg]["threshold"][metric]) 
+			else:
+			    continue
+	#except:
+	    #print("Error parsing threshold metrics. Check your messages configuration")	
+		#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
+
+
+	print lower_level_agg_count
+	for lower_agg in lower_level_agg_count:
+	    lower_level_results[lower_agg] = self.get_health(lower_level_agg_count[lower_agg])
+	print lower_level_results	
 	return lower_level_results
 
+    def get_health(self, total_count):
+
+        if total_count["4"] != 0:
+            status = 4
+        elif total_count["4"] == 0 and total_count["3"] != 0:
+            status = 3
+        else:
+            status = 2
+
+	return status
 
     def get_compare_type(self, thresh_element):
 
@@ -147,7 +182,7 @@ class Aggregator(object):
            return 'increasing'
 
     def status_check(self, total_count, status_element_name, status_element_value, status_mapped_health):
-
+	print ("stat map: " + str(status_mapped_health))
 	if str(status_element_value) == str(status_mapped_health["healthy"][status_element_name]):
             total_count["2"] += 1
         elif str(status_element_value)  == str(status_mapped_health['warning'][status_element_name]):
@@ -159,25 +194,29 @@ class Aggregator(object):
 
         return total_count
 
-    def threshold_check(self, compare_type, total_count, thresh_element, thresh_mapped_health):
-       
+    def threshold_check(self, compare_type, total_count, thresh_element_value, thresh_mapped_health):
+      
 	if compare_type == 'decreasing':
-            if thresh_element > thresh_mapped_health['healthy']:
+            if int(thresh_element_value) > thresh_mapped_health['healthy']:
                 total_count["2"] += 1
-            elif (thresh_element  < thresh_mapped_health['healthy']) and (thresh_element > thresh_mapped_health['critical']):
+            elif (int(thresh_element_value)  < thresh_mapped_health['healthy']) and (int(thresh_element_value) > thresh_mapped_health['critical']):
                 total_count["3"] += 1
 
             else:
                 total_count["4"] += 1
-
+	
         else:
-            if thresh_element > thresh_mapped_health['critical']:
+            if int(thresh_element_value) > thresh_mapped_health['critical']:
+		print(thresh_mapped_health['critical'])
                 total_count["4"] += 1
-            elif (thresh_element > thresh_mapped_health['healthy']) and (thresh_element < thresh_mapped_health['critical']):
+	
+            elif (int(thresh_element_value) > thresh_mapped_health['healthy']) and (int(thresh_element_value) < thresh_mapped_health['critical']):
                 total_count["3"] += 1
 
             else:
                 total_count["2"] += 1
+		
+	
 
         return total_count
 
@@ -188,6 +227,32 @@ class Aggregator(object):
     #def get_status_result(self,
 
     def get_higher_level_results(self, lower_level_results, message_aggs):
+
+	print("LOOWOWOOWOWOW: " + str(lower_level_results)) 
+	print(message_aggs)
+	higher_level_results = {}
+	higher_level_agg_count = {}
+
+	for high_agg in message_aggs:
+	    found = False
+	    higher_level_agg_count[high_agg] = {"1": 0, "2": 0, "3": 0,"4": 0}
+	    for health in message_aggs[high_agg]["status"]:
+		for lower_level_result in lower_level_results:
+		    if found == True:
+			continue
+
+		    if lower_level_result in message_aggs[high_agg]["status"][health]:
+			found = True
+			
+			print "dsfasf" + lower_level_result
+			higher_level_agg_count[high_agg] = self.status_check(higher_level_agg_count[high_agg], lower_level_result, lower_level_results[lower_level_result], message_aggs[high_agg]["status"])
+		
+		    print("ree")		
+        for high_agg in higher_level_agg_count:
+	    print higher_level_agg_count
+            higher_level_results[high_agg] = self.get_health(higher_level_agg_count[high_agg])
+	print higher_level_results
+
 	return higher_level_results
 
 

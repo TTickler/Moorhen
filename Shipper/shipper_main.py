@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
 	
 		aggregated_results = aggregator.results(message_object)
-		print(aggregated_results)
+	#	print(aggregated_results)
 		
 	        for endpoint in message_object.endpoints:
 		    try:
