@@ -88,6 +88,16 @@ class MonitoredMessage(Message):
 		self._timestamp = ''
 		self._payload = {}
 		self._monitored_payload = {}
+		self._meta_data = {}
+
+	@property
+	def meta_data(self):
+		return self._meta_data
+	
+	@meta_data.setter
+	def meta_data(self, meta_data):
+		self.monitored_payload["meta_data"] = meta_data
+		self._meta_data = meta_data
 
 	@property
 	def payload(self):

@@ -18,37 +18,33 @@ import time
 		queue of the Logstash-1 Endpoint object.'''
 class FIFOQueue(object):
 	def __init__(self):
-			
-		#instantiates queue object. maxsize argument 
-		#allows configuration of max queue size allowed.
-		#Anything less than or equal to zero means the queue size is 
-		#infinite. I chose -1 to make it clear as 0 would appear to be
-		#saying the queue cannot have any elements in it
-		self.queue = Queue.Queue(maxsize=-1)
+	
+		self.items = []
 
 		#setup logger here or in main interface for Shipper
 
 	@property
 	def queue_size(self):
-		return self.queue.qsize()
+		return len(self.items)
 
 	
 	def dequeue(self):
 		
 		#attempts to dequeue the first element
 		#if it fails the queue is empty
-		try:
-			element = self.queue.get()
-		except:
-			print("Queue is empty.")
-
+		
+			
+		element = self.items.pop()
+		#except:
+		#	print("Queue is empty.")
+		#	element = ''
 		return element
 
 	def enqueue(self, message):
 
 		try:
 
-			self.queue.put(message) 
+			self.items.insert(0, message) 
 
 		except:
 			print("Failed to place " + str(message) + " into " + str(self.queue))
@@ -63,7 +59,7 @@ class FIFOQueue(object):
 
 	def print_queue(self):
 	    
-	    for element in list(self.queue):
+	    for element in self.items:
 		print(element)
 
 
@@ -78,6 +74,9 @@ class Endpoint(threading.Thread):
 		self._address = ''
 		self._port = 0
 		self.fifo_queue = FIFOQueue()
+
+		self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sock_connect()
 	@property 
 	def address(self):
 		return self._address
@@ -94,19 +93,10 @@ class Endpoint(threading.Thread):
 	def port(self, port):
 		self._port = port
 
-	def init_socket(self):
-		try:
-			print("Creating Socket...")
-			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			
-
-		except socket.error as message:
-			print(message) 
-
 	#attempts to close socket
-	def close(self, socket):
+	def close(self):
 		try:
-			socket.close()
+			self._socket.close()
 			print("Successfully closed socket: " + self.address + ":" + str(self.port))
 
 		except:
@@ -124,8 +114,7 @@ class Endpoint(threading.Thread):
 
 		else:
 			try:
-				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-				sock.connect(self.address, self.port)
+				self._socket.connect(self.address, self.port)
 
 			except socket.error as message:
 				print(message)
@@ -135,7 +124,7 @@ class Endpoint(threading.Thread):
 				#closing thread
 				for attempt in range(0, max_conn_attempts):
 					print("\n\nAttempting to connect again...")
-					sock.connect(self.address, self.port)
+					self._socket.connect(self.address, self.port)
 				
 				return False
 
@@ -145,7 +134,7 @@ class Endpoint(threading.Thread):
 	def reset_connection(self, socket):
 		
 		try:
-			socket.connect(self.address, self.port)
+			self._socket.connect(self.address, self.port)
 			print("Successfully reset socket connection")
 			return True
 		except:
@@ -158,7 +147,7 @@ class Endpoint(threading.Thread):
 		'''SEND THE MESSAGE OBJECT'S PAYLOAD. NOT THE MESSAGE ITSELF'''
 	
 		try:
-			print("CHANGE THIS!!!!!")
+			self._socket.send(message)
 
 		except socket.error as msg:	
 			print("Message failed to send over port " + str(self.port) + " to host " + self.address)
@@ -169,6 +158,9 @@ class Endpoint(threading.Thread):
 	def run(self):
 			
 		while True:
-			print("THREAD: " + self.name)
-			print("QUEUE: ____________________  " + str(list(self.fifo_queue)))
+			if self.fifo_queue.is_empty() is False:
+				curr_message = self.fifo_queue.dequeue()
+			
+			#self.send(curr_message)
+		#	self.fifo_queue.print_queue()
 			time.sleep(5)

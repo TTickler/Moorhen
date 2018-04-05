@@ -111,24 +111,24 @@
 
                                         "not_found":{
 						   "CPUs": 1,
-						   "MEMs": 1,
+						   "DIR": 1,
 						   "PSUs": 1
 						},
                                         "healthy":{
                                                    "CPUs": 2,
-                                                   "MEMs": 2,
+                                                   "DIR": 2,
 						   "PSUs": 2
                                                 },
 
                                         "warning":{
                                                    "CPUs": 3,
-                                                   "MEMs": 3,
+                                                   "DIR": 3,
 						   "PSUs": 3
                                                 },
 
                                         "critical":{
                                                    "CPUs": 4,
-                                                   "MEMs": 4,
+                                                   "DIR": 4,
 						   "PSUs": 4
                                                 }
 
@@ -170,7 +170,7 @@
 				}
 
                 },
-           "MEMs": {
+           "DIR": {
                    "status":{
 
                    },
@@ -211,15 +211,15 @@
 
 		"threshold":{
 			"psu.1.temperature": {
-				"healthy": 30,
-				"warning": 40,
-				"critical": 50
+				"healthy": 50,
+				"warning": 60,
+				"critical": 70
 				},
 
                         "psu.2.temperature": {
-                                "healthy": 30,
-                                "warning": 40,
-                                "critical": 50
+                                "healthy": 50,
+                                "warning": 60,
+                                "critical": 70
                                 }
                           
 

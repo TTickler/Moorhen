@@ -5,7 +5,7 @@ import sys
 import time
 import pprint
 import elasticsearch
-from datetime import datetime
+import datetime
 import shipper, message, c_parser, monitor, endpoint
 import ConfigParser
 import threading 
@@ -71,23 +71,23 @@ if __name__ == '__main__':
 
 		message_object.__class__ = message.MonitoredMessage
 		message_object.monitored_payload  = monitor_interface.results(message_object)
-
-	
+		message_object.meta_data = {"timestamp": str(datetime.datetime.now()), "host": "colby"}	
 		aggregated_results = aggregator.results(message_object)
 
 	        for endpoint in message_object.endpoints:
 		    for thread in endpoint_threads:
 		   # try:
-		        if endpoint == thread.name:
-		   
+		        if str(endpoint) == str(thread.name):
+			    print("\n\nENDPOINT: " + thread.name)	   
 	            	    thread.fifo_queue.enqueue(aggregated_results)
-			    print(list(thread.fifo_queue))
+			    thread.fifo_queue.enqueue(message_object.monitored_payload)	    
+			    thread.fifo_queue.print_queue()
 
 		    #except:
 		     #   print("Failed to enqueue handled results for: " + str(endpoint) + " with message: " + str(message_object._number))
 
 
-	time.sleep(5)
+	time.sleep(10)
 	
 
 
