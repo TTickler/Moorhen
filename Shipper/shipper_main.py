@@ -74,14 +74,17 @@ if __name__ == '__main__':
 
 	
 		aggregated_results = aggregator.results(message_object)
-	#	print(aggregated_results)
-		
-	        for endpoint in message_object.endpoints:
-		    try:
-		        endpoint_threads.index(endpoint).fifo_queue.enqueue(handled_results)
 
-		    except:
-		        print("Failed to enqueue handled results for: " + str(endpoint) + " with message: " + str(message_object._number))
+	        for endpoint in message_object.endpoints:
+		    for thread in endpoint_threads:
+		   # try:
+		        if endpoint == thread.name:
+		   
+	            	    thread.fifo_queue.enqueue(aggregated_results)
+			    print(list(thread.fifo_queue))
+
+		    #except:
+		     #   print("Failed to enqueue handled results for: " + str(endpoint) + " with message: " + str(message_object._number))
 
 
 	time.sleep(5)

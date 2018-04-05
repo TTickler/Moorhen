@@ -101,7 +101,10 @@ class Aggregator(object):
 
 	agg_results.update(msg_low_agg_results)
 	agg_results.update(msg_high_agg_results)
-	#print(agg_results)
+
+	print("lower: " + str(msg_low_agg_results))
+
+	print(agg_results)
 	return agg_results
 
     '''Gets the results of the lower level aggregations for use by possible 
@@ -122,7 +125,6 @@ class Aggregator(object):
                     lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
 
 		    for health in message_lower_aggs[low_agg]["status"]:
-		#	print health
 			if found == True:
 			    continue
 		        if monitor_result_name in message_lower_aggs[low_agg]["status"][health]:
@@ -156,8 +158,8 @@ class Aggregator(object):
 	    #print("Error parsing threshold metrics. Check your messages configuration")	
 		#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
 
-
-	
+	print(monitor_results)
+	print(lower_level_agg_count)	
 	for lower_agg in lower_level_agg_count:
 	    lower_level_results[lower_agg] = self.get_health(lower_level_agg_count[lower_agg])
 		
@@ -240,13 +242,10 @@ class Aggregator(object):
 		    
 		    if lower_level_result in message_aggs[high_agg]["status"][health]:
 			found = True
-			
-			print "dsfasf" + lower_level_result
 			higher_level_agg_count[high_agg] = self.status_check(higher_level_agg_count[high_agg], lower_level_result, lower_level_results[lower_level_result], message_aggs[high_agg]["status"])
 		
 		  		
         for high_agg in higher_level_agg_count:
-	    print higher_level_agg_count
             higher_level_results[high_agg] = self.get_health(higher_level_agg_count[high_agg])
 	print higher_level_results
 

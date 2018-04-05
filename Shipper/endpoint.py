@@ -27,7 +27,6 @@ class FIFOQueue(object):
 		self.queue = Queue.Queue(maxsize=-1)
 
 		#setup logger here or in main interface for Shipper
-	
 
 	@property
 	def queue_size(self):
@@ -171,4 +170,5 @@ class Endpoint(threading.Thread):
 			
 		while True:
 			print("THREAD: " + self.name)
+			print("QUEUE: ____________________  " + str(list(self.fifo_queue)))
 			time.sleep(5)
