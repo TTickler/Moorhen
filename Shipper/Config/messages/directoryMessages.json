@@ -25,7 +25,7 @@
 		 "command": "file_size",
 		 "type": "threshold",
 		 "mappings":{
-			   "path": "/home/sysadm/test.ini"
+			   "path": "/var/log/audit/audit.log"
 			   }
 	       },
 
@@ -37,6 +37,16 @@
 		 "type": "threshold",
                  "mappings":{
                            "path": "/home/sysadm/test.ini"
+                           }
+               },
+
+                {
+
+                 "name": "shipper-dir-size",
+                 "command": "dir_size",
+                 "type": "threshold",
+                 "mappings":{
+                           "path": "~/Shipper"
                            }
                },
 
@@ -195,7 +205,21 @@
                                                    "warning": 400,
                                                    "critical": 50000
 
-						}
+						},
+
+			       "audit-log-size": {
+                                                   "healthy": 500000,
+                                                   "warning": 6660000,
+                                                   "critical": 15000000
+
+                                                },
+
+			       "shipper-dir-size": {
+                                                   "healthy": 200,
+                                                   "warning": 400,
+                                                   "critical": 50000
+
+                                                }
 			
 			}
                 },

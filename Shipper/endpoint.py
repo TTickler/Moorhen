@@ -1,5 +1,5 @@
 import socket
-
+import pprint
 #for future use to allow multiple endpoints to have
 #data shipped to them asynchro
 import threading
@@ -60,7 +60,7 @@ class FIFOQueue(object):
 	def print_queue(self):
 	    
 	    for element in self.items:
-		print(element)
+		pprint.pprint(element)
 
 
 

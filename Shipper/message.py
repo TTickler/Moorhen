@@ -87,7 +87,6 @@ class Message(object):
 
         @meta_data.setter
         def meta_data(self, meta_data):
-                self.monitored_payload["meta_data"] = meta_data
                 self._meta_data = meta_data
 
 
@@ -130,7 +129,7 @@ class MonitoredMessage(Message):
 	@monitored_payload.setter
 	def monitored_payload(self, monitored_payload):
 		self._monitored_payload = monitored_payload
-		self._monitored_payload.update(self.meta_data)
+	
 
 class UnmonitoredMessage(Message):
 	def __init__(self):
