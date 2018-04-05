@@ -132,9 +132,17 @@ class messagesParser(cParser):
 	initialized_msg_object.high_level_aggs = self.get_high_level_aggs(message_json)
 	initialized_msg_object.low_level_aggs = self.get_low_level_aggs(message_json)	
 	initialized_msg_object.focus = self.get_focus(message_json)
+	initialized_msg_object.meta_data["agg"] = self.get_high_level_meta(message_json)
+	initialized_msg_object.meta_data["non_agg"] = self.get_low_level_meta(message_json)
 	#initialized_msg_object.monitor_type = self.get_monitor_type(message_json)
 
 	return initialized_msg_object
+
+    def get_high_level_meta(self, message):
+	return message["meta_data"]["agg"]
+
+    def get_low_level_meta(self, message):
+	return message["meta_data"]["non_agg"]
 
     def get_focus(self, message):
 	return message["focus"]

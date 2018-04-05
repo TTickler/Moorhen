@@ -3,6 +3,21 @@
    {	
       "monitor_name": "testMonitor",
       "endpoints": ["logstash-1", "test"],
+      "meta_data":{
+		 "agg": {
+			"hostname": "client1",
+			"point_of_contact": "Tom Perry",
+			"doc_type": "sys_status",
+			"index": "shipper"
+			},
+		 "non_agg": {
+
+                        "hostname": "client1",
+                        "point_of_contact": "Tom Perry",
+                        "doc_type": "node_status",
+                        "index": "shipper"
+			}
+		},
       "focus":[
 		{
 

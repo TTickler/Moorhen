@@ -13,7 +13,7 @@ class Message(object):
 		self._high_level_aggs = {}
 		self._low_level_aggs = {}
 		self._focus = []
-
+		self._meta_data = {}
 
 	'''Acts similar to __init__(), but provides a more readable point of 
 		"entry" to this interface. This way it's abundantly clear that 
@@ -81,6 +81,17 @@ class Message(object):
 		self._low_level_aggs = low_level_aggs
 
 
+        @property
+        def meta_data(self):
+                return self._meta_data
+
+        @meta_data.setter
+        def meta_data(self, meta_data):
+                self.monitored_payload["meta_data"] = meta_data
+                self._meta_data = meta_data
+
+
+
 class MonitoredMessage(Message):
 	def __init__(self):
 		Message.__init__(self)
@@ -88,16 +99,6 @@ class MonitoredMessage(Message):
 		self._timestamp = ''
 		self._payload = {}
 		self._monitored_payload = {}
-		self._meta_data = {}
-
-	@property
-	def meta_data(self):
-		return self._meta_data
-	
-	@meta_data.setter
-	def meta_data(self, meta_data):
-		self.monitored_payload["meta_data"] = meta_data
-		self._meta_data = meta_data
 
 	@property
 	def payload(self):
@@ -129,6 +130,7 @@ class MonitoredMessage(Message):
 	@monitored_payload.setter
 	def monitored_payload(self, monitored_payload):
 		self._monitored_payload = monitored_payload
+		self._monitored_payload.update(self.meta_data)
 
 class UnmonitoredMessage(Message):
 	def __init__(self):

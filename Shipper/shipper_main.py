@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 		message_object.__class__ = message.MonitoredMessage
 		message_object.monitored_payload  = monitor_interface.results(message_object)
-		message_object.meta_data = {"timestamp": str(datetime.datetime.now()), "host": "colby"}	
+		#message_object.meta_data = {"timestamp": str(datetime.datetime.now()), "host": "colby"}	
 		aggregated_results = aggregator.results(message_object)
 
 	        for endpoint in message_object.endpoints:
