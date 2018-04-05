@@ -56,6 +56,28 @@
                            "OID": "1.3.6.1.4.1.232.6.2.6.8.1.4.1.2"
                            }
 
+                },
+
+                {
+
+                 "name": "psu.1.status",
+                 "type": "status",
+                 "command": "snmp_int_result",
+                 "mappings":{
+                           "OID": "1.3.6.1.4.1.232.6.2.9.3.1.4.0.1"
+                           }
+
+                },
+
+                {
+
+                 "name": "psu.2.status",
+                 "type": "status",
+                 "command": "snmp_int_result",
+                 "mappings":{
+                           "OID": "1.3.6.1.4.1.232.6.2.9.3.1.4.0.2"
+                           }
+
                 }
 
 
@@ -67,21 +89,25 @@
 
                                         "not_found":{
 						   "CPUs": 1,
-						   "MEMs": 1
+						   "MEMs": 1,
+						   "PSUs": 1
 						},
                                         "healthy":{
                                                    "CPUs": 2,
-                                                   "MEMs": 2
+                                                   "MEMs": 2,
+						   "PSUs": 2
                                                 },
 
                                         "warning":{
                                                    "CPUs": 3,
-                                                   "MEMs": 3
+                                                   "MEMs": 3,
+						   "PSUs": 3
                                                 },
 
                                         "critical":{
                                                    "CPUs": 4,
-                                                   "MEMs": 4
+                                                   "MEMs": 4,
+						   "PSUs": 4
                                                 }
 
                                         }
@@ -128,14 +154,43 @@
                    },
                    "threshold":{
 			       "shipper-log-size": {
-                                                   "healthy": 100,
+                                                   "healthy": 200,
                                                    "warning": 400,
                                                    "critical": 50000
 
 						}
 			
 			}
-                }
+                },
+
+
+	    "PSUs":{
+		"status": {
+                      "not_found":{
+                                "psu.1.status": 1,
+                                "psu.2.status": 1
+                                },
+                      "healthy":{
+                                "psu.1.status": 2,
+                                "psu.2.status": 2
+                                },
+
+                      "warning":{
+                                "psu.1.status": 3,
+                                "psu.2.status": 3
+                                },
+
+                      "critical":{
+                                "psu.1.status": 4,
+                                "psu.2.status": 4
+                                }
+
+			},
+
+		 "threshold":{}
+
+		}
+
               }
 
     }
