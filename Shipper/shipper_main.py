@@ -50,6 +50,7 @@ if __name__ == '__main__':
     endpoint_threads = []
     for section in config_parser.sections():
 	#try:
+	print section
 	thread = endpoint.Endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section)
 	endpoint_threads.append(thread)
 	thread.daemon = True

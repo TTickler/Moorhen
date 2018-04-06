@@ -1,4 +1,5 @@
 import socket
+import struct
 import pprint
 #for future use to allow multiple endpoints to have
 #data shipped to them asynchro
@@ -6,7 +7,7 @@ import threading
 import Queue
 import logging
 import time 
-
+import json
 
 
 
@@ -69,13 +70,13 @@ class Endpoint(threading.Thread):
 	#As of now, no init parameters needed as
 	#goal is to be property based Endpoint
 	#name argument is for unique identifier of each object
-	def __init__(self, name, address, port):
+	def __init__(self, address, port, name):
 		threading.Thread.__init__(self)
-		self._address = ''
-		self._port = 0
+		self._address = address
+		self._port = port
 		self.fifo_queue = FIFOQueue()
 
-		self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.init_socket()
 		self.sock_connect()
 	@property 
 	def address(self):
@@ -93,8 +94,12 @@ class Endpoint(threading.Thread):
 	def port(self, port):
 		self._port = port
 
+	def init_socket(self):
+                self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
 	#attempts to close socket
-	def close(self):
+	def close_connection(self):
 		try:
 			self._socket.close()
 			print("Successfully closed socket: " + self.address + ":" + str(self.port))
@@ -114,7 +119,12 @@ class Endpoint(threading.Thread):
 
 		else:
 			try:
-				self._socket.connect(self.address, self.port)
+				self._socket.connect((self.address, int(self.port)))
+    				l_onoff = 1                                                                                                                                                           
+    				l_linger = 0                                                                                                                                                          
+    				self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER,                                                                                                                     
+                 			struct.pack('ii', l_onoff, l_linger))
+
 
 			except socket.error as message:
 				print(message)
@@ -124,22 +134,27 @@ class Endpoint(threading.Thread):
 				#closing thread
 				for attempt in range(0, max_conn_attempts):
 					print("\n\nAttempting to connect again...")
-					self._socket.connect(self.address, self.port)
-				
+					try:
+						self._socket.connect((self.address, int(self.port)))
+					except socket.error as msg:
+						print msg
 				return False
 
 
 	'''Returns True if socket connection is reset and connected
 		successfully. False if otherwise.'''
-	def reset_connection(self, socket):
+	def reset_connection(self):
 		
-		try:
-			self._socket.connect(self.address, self.port)
-			print("Successfully reset socket connection")
-			return True
-		except:
-			print("Failed to reset socket connection")
-			return False
+		#try:
+		self.close_connection()
+		self.init_socket()
+		self.sock_connect()
+		#self._socket.connect((self.address, int(self.port)))
+		#print("Successfully reset socket connection")
+		#	return True
+		#except:
+		#	print("Failed to reset socket connection")
+		#	return False
 	
 	def send(self, message):
 		
@@ -151,6 +166,8 @@ class Endpoint(threading.Thread):
 
 		except socket.error as msg:	
 			print("Message failed to send over port " + str(self.port) + " to host " + self.address)
+			print("Resetting connection...")
+			self.reset_connection()
 
 
 
@@ -158,9 +175,11 @@ class Endpoint(threading.Thread):
 	def run(self):
 			
 		while True:
+
+			print("reeE")
 			if self.fifo_queue.is_empty() is False:
 				curr_message = self.fifo_queue.dequeue()
+				self.send(json.dumps(curr_message))
 			
-			#self.send(curr_message)
 		#	self.fifo_queue.print_queue()
 			time.sleep(5)
