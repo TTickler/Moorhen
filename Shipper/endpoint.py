@@ -157,9 +157,6 @@ class Endpoint(threading.Thread):
 		#	return False
 	
 	def send(self, message):
-		
-
-		'''SEND THE MESSAGE OBJECT'S PAYLOAD. NOT THE MESSAGE ITSELF'''
 	
 		try:
 			self._socket.sendall(message)
@@ -182,9 +179,9 @@ class Endpoint(threading.Thread):
 
 
 				message = curr_message
-				to_send = {"message": message, "tags": ['test'], "fields": {"test": "test"}}
-				print("to_send:  " + str(to_send))
-				self.send(json.dumps(to_send))
+				to_send = {"@message": message, "@tags": ['test'], "@fields": {"test": "test"}}
+				print(json.dumps(to_send))
+				self.send(json.dumps(to_send) + '\n')
 			
 		#	self.fifo_queue.print_queue()
 			time.sleep(5)

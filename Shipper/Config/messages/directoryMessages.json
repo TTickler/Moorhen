@@ -2,7 +2,7 @@
 "messages":[
    {	
       "monitor_name": "testMonitor",
-      "endpoints": ["logstash-1", "test"],
+      "endpoints": ["logstash-1", "listener"],
       "meta_data":{
 		 "agg": {
 			"hostname": "client1",
