@@ -162,7 +162,7 @@ class Endpoint(threading.Thread):
 		'''SEND THE MESSAGE OBJECT'S PAYLOAD. NOT THE MESSAGE ITSELF'''
 	
 		try:
-			self._socket.send(message)
+			self._socket.sendall(message)
 
 		except socket.error as msg:	
 			print("Message failed to send over port " + str(self.port) + " to host " + self.address)
@@ -179,7 +179,12 @@ class Endpoint(threading.Thread):
 			print("reeE")
 			if self.fifo_queue.is_empty() is False:
 				curr_message = self.fifo_queue.dequeue()
-				self.send(json.dumps(curr_message))
+
+
+				message = curr_message
+				to_send = {"message": message, "tags": ['test'], "fields": {"test": "test"}}
+				print("to_send:  " + str(to_send))
+				self.send(json.dumps(to_send))
 			
 		#	self.fifo_queue.print_queue()
 			time.sleep(5)

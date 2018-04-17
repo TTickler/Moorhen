@@ -47,17 +47,18 @@ if __name__ == '__main__':
 	        else:
 	            endpoints.append(endP)
 
+    #list to hold thread objects 
     endpoint_threads = []
     for section in config_parser.sections():
-	#try:
-	print section
-	thread = endpoint.Endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section)
-	endpoint_threads.append(thread)
-	thread.daemon = True
-	thread.name = section
-	thread.start()
-	#except:
-	 #   print("Invalid section configuration in endpoints.ini. Check format.")
+	try:
+	    print section
+ 	    thread = endpoint.Endpoint(config_parser.get(section, "host"), config_parser.get(section, "port"), section)
+	    endpoint_threads.append(thread)
+	    thread.daemon = True
+	    thread.name = section
+ 	    thread.start()
+	except:
+	    print("Invalid section configuration in endpoints.ini. Check format.")
 
     i = 0
 
@@ -69,7 +70,6 @@ if __name__ == '__main__':
 		#print(message_object.high_level_aggs)
 	        
 		#casting message_object to child interface of monitoredMessage
-
 		message_object.__class__ = message.MonitoredMessage
 		message_object.monitored_payload  = monitor_interface.results(message_object)
 		#message_object.meta_data = {"timestamp": str(datetime.datetime.now()), "host": "colby"}	
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
 	        for endpoint in message_object.endpoints:
 		    for thread in endpoint_threads:
-		   # try:
+		   #try:
 		        if str(endpoint) == str(thread.name):
 			    print("\n\nENDPOINT: " + thread.name)	   
 	            	    thread.fifo_queue.enqueue(aggregated_results)
