@@ -162,6 +162,21 @@ class messagesParser(cParser):
     def get_focus(self, message):
 	return message["focus"]
 
+
+    def flatten(self, dict_message):
+
+	flattened_message = {}
+	for status_metric in dict_message["status"]:
+	    for key, value in status_metric.iteritems():
+		flattened_message[key] = value
+
+	for threshold_metric in dict_message["threshold"]:
+	   for key, value in threshold_metric.iteritems():
+		flattened_message[key] = value
+
+
+	return flattened_message
+
     #checks if passed in message is valid according to set JSON schema
     #returns True if it is valid and false otherwise
     def is_valid_schema(self, message_json):

@@ -83,7 +83,7 @@ if __name__ == '__main__':
 		        if str(endpoint) == str(thread.name):
 			    print("\n\nENDPOINT: " + thread.name)	   
 	            	    thread.fifo_queue.enqueue(aggregated_results)
-			    thread.fifo_queue.enqueue(message_object.monitored_payload)	    
+			    thread.fifo_queue.enqueue(msg_parser.flatten(message_object.monitored_payload))	    
 			    thread.fifo_queue.print_queue()
 
 		    #except:

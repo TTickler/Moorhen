@@ -179,9 +179,8 @@ class Endpoint(threading.Thread):
 
 
 				message = curr_message
-				to_send = {"@message": message, "@tags": ['test'], "@fields": {"test": "test"}}
-				print(json.dumps(to_send))
-				self.send(json.dumps(to_send) + '\n')
+				print(json.dumps(message))
+				self.send(json.dumps(message) + '\n')
 			
 		#	self.fifo_queue.print_queue()
 			time.sleep(5)
