@@ -43,17 +43,23 @@ class Monitor(object):
 
 	cmd_results = ""
 	
-	for mapping in focus["mappings"]:
-	    	
-	    #unparsed strings in monitorMappings.ini are {STRING} format
-	    match_string = "{" + mapping  + "}"
-		
-	    if match_string in unparsed_cmd:
-                parsed_cmd = unparsed_cmd.replace(match_string, focus["mappings"][mapping])
+	total_mappings = len(focus["mappings"].keys())
 
-	    else:
-                continue	
-	    cmd_results = self.sys_command(parsed_cmd)
+	if total_mappings != 0:
+	    for mapping in focus["mappings"]:
+	    	
+	        #unparsed strings in monitorMappings.ini are {STRING} format
+	        match_string = "{" + mapping  + "}"
+		
+	        if match_string in unparsed_cmd:
+                    parsed_cmd = unparsed_cmd.replace(match_string, focus["mappings"][mapping])
+	
+	else:
+	    #parsed_cmd becomes original unparsed_cmd due to no mappings
+	    #meaning command was intended as is without any mappings
+	    parsed_cmd = unparsed_cmd
+	   	
+	cmd_results = self.sys_command(parsed_cmd)
 	
 	return {focus_name: cmd_results}
 
@@ -104,7 +110,7 @@ class Aggregator(object):
 
 	print("lower: " + str(msg_low_agg_results))
 
-	print(agg_results)
+	#print(agg_results)
 	return agg_results
 
     '''Gets the results of the lower level aggregations for use by possible 
@@ -120,7 +126,7 @@ class Aggregator(object):
 	    found = False
 	    for monitor_result_name in monitor_result:
 		 
-		#print("monitor_result: " + str(monitor_result) + " mon result name: " + monitor_result_name)
+		print("monitor_result: " + str(monitor_result) + " mon result name: " + monitor_result_name)
 	        for low_agg in message_lower_aggs:
                     lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
 
@@ -184,16 +190,20 @@ class Aggregator(object):
            return 'increasing'
 
     def status_check(self, total_count, status_element_name, status_element_value, status_mapped_health):
-	
+
+	#print("stat_element_name: " + str(status_element_name))
+	#print(repr(status_element_value))	
 	if str(status_element_value) == str(status_mapped_health["healthy"][status_element_name]):
             total_count["2"] += 1
         elif str(status_element_value)  == str(status_mapped_health['warning'][status_element_name]):
             total_count["3"] += 1
         elif str(status_element_value) == str(status_mapped_health['critical'][status_element_name]):
+            print("stat_element_name: " + str(status_element_name))
+
             total_count["4"] += 1
         else:
             total_count["1"] += 1
-
+	print(str(status_element_name) + str(total_count))
         return total_count
 
     def threshold_check(self, compare_type, total_count, thresh_element_value, thresh_mapped_health):
@@ -247,7 +257,7 @@ class Aggregator(object):
 		  		
         for high_agg in higher_level_agg_count:
             higher_level_results[high_agg] = self.get_health(higher_level_agg_count[high_agg])
-	print higher_level_results
+	#print higher_level_results
 
 	return higher_level_results
 

@@ -182,7 +182,7 @@ class Endpoint(threading.Thread):
 
 
 				message = curr_message
-				print(json.dumps(message))
+			#	print(json.dumps(message))
 				self.send(json.dumps(message) + '\n')
 			
 		#	self.fifo_queue.print_queue()

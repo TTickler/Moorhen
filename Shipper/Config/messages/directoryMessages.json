@@ -116,6 +116,18 @@
 
                 },
 
+
+                {
+
+                 "name": "site_status",
+                 "type": "status",
+                 "command": "site_status",
+                 "mappings":{}
+
+                },
+
+
+
                 {
 
                  "name": "psu.2.temperature",
@@ -163,6 +175,7 @@
                         },
 
         "LowLevelAggs":{
+
            "CPUs": {
                    "status":{
                       "not_found":{
@@ -201,23 +214,23 @@
                    },
                    "threshold":{
 			       "shipper-log-size": {
-                                                   "healthy": 200,
-                                                   "warning": 400,
-                                                   "critical": 50000
+                                                   "healthy": 2000,
+                                                   "warning": 4000,
+                                                   "critical": 5000000000
 
 						},
 
 			       "audit-log-size": {
-                                                   "healthy": 500000,
-                                                   "warning": 6660000,
-                                                   "critical": 15000000
+                                                   "healthy": 500,
+                                                   "warning": 6660,
+                                                   "critical": 1500000000
 
                                                 },
 
 			       "shipper-dir-size": {
-                                                   "healthy": 200,
-                                                   "warning": 400,
-                                                   "critical": 50000
+                                                   "healthy": 20000,
+                                                   "warning": 400000,
+                                                   "critical": 50000000
 
                                                 }
 			
