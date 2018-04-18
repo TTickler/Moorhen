@@ -133,11 +133,15 @@ class Endpoint(threading.Thread):
 				#Prefer to have a default value of 3-5 connection attempts before
 				#closing thread
 				for attempt in range(0, max_conn_attempts):
+					
+					time.sleep(5)
 					print("\n\nAttempting to connect again...")
 					try:
 						self._socket.connect((self.address, int(self.port)))
 					except socket.error as msg:
 						print msg
+
+					
 				return False
 
 
@@ -172,8 +176,7 @@ class Endpoint(threading.Thread):
 	def run(self):
 			
 		while True:
-
-			print("reeE")
+			time.sleep(2)
 			if self.fifo_queue.is_empty() is False:
 				curr_message = self.fifo_queue.dequeue()
 
@@ -183,4 +186,4 @@ class Endpoint(threading.Thread):
 				self.send(json.dumps(message) + '\n')
 			
 		#	self.fifo_queue.print_queue()
-			time.sleep(5)
+			
