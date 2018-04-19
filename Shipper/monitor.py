@@ -125,11 +125,15 @@ class Aggregator(object):
 	for monitor_result in monitor_results["status"]:
 	    found = False
 	    for monitor_result_name in monitor_result:
-		 
-		print("monitor_result: " + str(monitor_result) + " mon result name: " + monitor_result_name)
-	        for low_agg in message_lower_aggs:
-                    lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
+                #lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
 
+		#print("monitor_result: " + str(monitor_result) + " mon result name: " + monitor_result_name)
+	        for low_agg in message_lower_aggs:
+		    if low_agg in lower_level_agg_count.keys():
+		        if lower_level_agg_count[low_agg] == total_count:
+                            lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
+		    else:
+			lower_level_agg_count[low_agg] = {"1": 0,"2": 0,"3": 0,"4": 0}
 		    for health in message_lower_aggs[low_agg]["status"]:
 			if found == True:
 			    continue
@@ -158,14 +162,15 @@ class Aggregator(object):
 		            found = True
                             
 	                    lower_level_agg_count[low_agg] = self.threshold_check(self.get_compare_type(message_lower_aggs[low_agg]["threshold"][metric]), lower_level_agg_count[low_agg], monitor_result[monitor_result_name], message_lower_aggs[low_agg]["threshold"][metric]) 
+			    print("LOW LEVEL AGG: " + str(lower_level_agg_count))
 			else:
 			    continue
 	#except:
 	    #print("Error parsing threshold metrics. Check your messages configuration")	
 		#lower_level_results[monitored_metric] = self.threshold_check(self.get_compare_type(
 
-	print(monitor_results)
-	print(lower_level_agg_count)	
+	#print(monitor_results)
+	#print(lower_level_agg_count)	
 	for lower_agg in lower_level_agg_count:
 	    lower_level_results[lower_agg] = self.get_health(lower_level_agg_count[lower_agg])
 		
@@ -203,7 +208,7 @@ class Aggregator(object):
             total_count["4"] += 1
         else:
             total_count["1"] += 1
-	print(str(status_element_name) + str(total_count))
+#	print(str(status_element_name) + str(total_count))
         return total_count
 
     def threshold_check(self, compare_type, total_count, thresh_element_value, thresh_mapped_health):
