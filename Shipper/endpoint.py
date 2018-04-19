@@ -76,8 +76,8 @@ class Endpoint(threading.Thread):
 		self._port = port
 		self.fifo_queue = FIFOQueue()
 
-		self.init_socket()
-		self.sock_connect()
+		#self.init_socket()
+		#self.sock_connect()
 	@property 
 	def address(self):
 		return self._address
@@ -174,7 +174,9 @@ class Endpoint(threading.Thread):
 
 	''''''
 	def run(self):
-			
+                self.init_socket()
+                self.sock_connect()
+	
 		while True:
 			time.sleep(2)
 			if self.fifo_queue.is_empty() is False:
