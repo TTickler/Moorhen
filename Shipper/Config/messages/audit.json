@@ -1,0 +1,54 @@
+{
+"messages":[
+   {	
+      "monitor_name": "auditMonitor",
+      "endpoints": ["logstash-1"],
+      "meta_data":{
+		 "agg": {
+			"hostname": "client1",
+			"point_of_contact": "Tom Perry",
+			"doc_type": "sys_status",
+			"index": "shipper"
+			},
+		 "non_agg": {
+
+                        "hostname": "client1",
+                        "point_of_contact": "Tom Perry",
+                        "doc_type": "node_status",
+                        "index": "shipper"
+			}
+		},
+      "focus":[
+		{
+
+		 "name": "audit-log-size",
+		 "command": "file_size",
+		 "type": "threshold",
+		 "mappings":{
+			   "path": "/var/log/audit/audit.log"
+			   }
+	       },
+
+
+               {	
+                 "name": "audit-log",
+                 "command": "grab_audit_log",
+                 "type": "status",
+                 "mappings":{}
+               }
+ 
+	    ], 
+      "aggs":{
+        "HighLevelAggs":{                           
+                        },
+
+        "LowLevelAggs":{}
+                          
+    }
+
+	}
+
+	        
+   
+  ]
+}

@@ -28,23 +28,14 @@ class FIFOQueue(object):
 	def queue_size(self):
 		return len(self.items)
 
-	
+	'''queue interface dequeue function. Following FIFO logic
+		first element is popped off of queue and returned'''
 	def dequeue(self):
-		
-		#attempts to dequeue the first element
-		#if it fails the queue is empty
-		
-			
-		element = self.items.pop()
-		#except:
-		#	print("Queue is empty.")
-		#	element = ''
-		return element
+		return self.items.pop()
 
 	def enqueue(self, message):
 
 		try:
-
 			self.items.insert(0, message) 
 
 		except:
@@ -67,17 +58,15 @@ class FIFOQueue(object):
 
 class Endpoint(threading.Thread):
 
-	#As of now, no init parameters needed as
-	#goal is to be property based Endpoint
-	#name argument is for unique identifier of each object
+	'''Endpoint is initialized and passed parameters
+		are set as properties of Endpoint object'''
 	def __init__(self, address, port, name):
 		threading.Thread.__init__(self)
 		self._address = address
 		self._port = port
 		self.fifo_queue = FIFOQueue()
 
-		#self.init_socket()
-		#self.sock_connect()
+	'''Endpoint interface properties'''
 	@property 
 	def address(self):
 		return self._address
@@ -129,9 +118,7 @@ class Endpoint(threading.Thread):
 			except socket.error as message:
 				print(message)
 
-				#Change from hardcoded value to configurable value
-				#Prefer to have a default value of 3-5 connection attempts before
-				#closing thread
+				'''If TCP connection fails attempt to reconnect max_conn_attempts times'''
 				for attempt in range(0, max_conn_attempts):
 					
 					time.sleep(5)
@@ -172,20 +159,27 @@ class Endpoint(threading.Thread):
 
 
 
-	''''''
+	'''run function for endpoint threading utilized for each endpoint configured in messages'''
 	def run(self):
+
+		'''socket is initialized and an attempt to connect is made.
+			Both function calls reside in run() to avoid thread blocking
+			when endpoints are initially spun up.'''
                 self.init_socket()
                 self.sock_connect()
 	
 		while True:
-			time.sleep(2)
+			time.sleep(1)
+
+			'''check for if the endpoint queue is empty.
+				If queue is not empty FIFO logic is applied to 
+				dequeue a message and send message utilizing TCP connection'''
 			if self.fifo_queue.is_empty() is False:
 				curr_message = self.fifo_queue.dequeue()
 
-
-				message = curr_message
-			#	print(json.dumps(message))
-				self.send(json.dumps(message) + '\n')
+				'''messages are sent as JSON. New line is used to work properly with 
+					endpoints expecting JSON_lines such as logstash. Logstash will NOT
+					know the difference between messages without a new line delimeter '''
+				self.send(json.dumps(curr_message) + '\n')
 			
-		#	self.fifo_queue.print_queue()
 			

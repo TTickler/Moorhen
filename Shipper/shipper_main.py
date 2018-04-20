@@ -90,7 +90,7 @@ if __name__ == '__main__':
 		     #   print("Failed to enqueue handled results for: " + str(endpoint) + " with message: " + str(message_object._number))
 
 
-	time.sleep(10)
+	time.sleep(1)
 	
 
 
