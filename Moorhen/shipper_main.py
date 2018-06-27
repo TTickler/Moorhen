@@ -1,12 +1,10 @@
 import json
 import os
-import snmp_interface
 import sys
 import time
 import pprint
-import elasticsearch
 import datetime
-import shipper, message, c_parser, monitor, endpoint
+import message, c_parser, monitor, endpoint
 import ConfigParser
 import threading 
 

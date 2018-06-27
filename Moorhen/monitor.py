@@ -65,9 +65,14 @@ class Monitor(object):
 
     def sys_command(self, command):
         
-#	args = shlex.split(command)
+	#args = shlex.split(command)
 	#gets output from system call with a shell. Strips away \n character
-        command_result = subprocess.check_output(command, shell=True).strip()
+
+	try:
+            command_result = subprocess.check_output(command, shell=True).strip()
+	except:
+	    print("Command: " + str(command) + "failed. Result for command will be 0.")
+	    command_result = 0
 	return command_result  
 
     def exec_local(self, focus_string):
